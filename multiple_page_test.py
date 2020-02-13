@@ -26,7 +26,7 @@ class Page2(Page):
 
            ping_scan = """
            ls
-           nmap """ + "-sL" + """ """ + entry.get() + """> ping_scan_results_file
+           nmap """ + get_scan_selected() + """ """ + entry.get() + """> ping_scan_results_file
            """
 
            # subprocess.call(["ls"], shell=True)
@@ -53,6 +53,21 @@ class Page2(Page):
 
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
+
+       selection = IntVar()
+       r1 = Radiobutton(self, text="List Scan", variable=selection, value=1)
+       r1.place(relx=0.05, rely=0.9, anchor=W)
+
+       r2 = Radiobutton(self, text="Ping Scan", variable=selection, value=2)
+       r2.place(relx=0.05, rely=0.95, anchor=W)
+
+       def get_scan_selected():
+           if selection.get() == 1:
+               x = "-sL"
+               return x
+           elif selection.get() == 2:
+               x = "-sn"
+               return x
 
        button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black", command = host_discovery_scan)  # creates the button
        button.pack(side = "bottom")
@@ -106,5 +121,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("400x400")
+    root.maxsize(1920, 1080)
+    root.minsize(900, 600)
     root.mainloop()
