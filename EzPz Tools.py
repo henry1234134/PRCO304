@@ -33,8 +33,8 @@ def host_discovery_scan():
 
 root = tk.Tk()  # holds everything
 root.title("EzPz Tools")
-root.maxsize(1920,1080)
-root.minsize(900,600)
+root.maxsize(1920, 1080)
+root.minsize(900, 600)
 
 canvas = tk.Canvas(root, height=700, width=700, bg="white") # root is where you want to attach the canvas
 canvas.pack() # attaches it to the root
@@ -84,4 +84,5 @@ def get_scan_selected():
         x = "-sn"
         return x
 
-root.mainloop() # make it run
+
+root.mainloop()  # make it run

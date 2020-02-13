@@ -1,4 +1,7 @@
 import tkinter as tk
+from tkinter import *
+import _thread, time, datetime
+import subprocess
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -17,6 +20,42 @@ class Page2(Page):
        Page.__init__(self, *args, **kwargs)
        label = tk.Label(self, text="This is page 2")
        label.pack(side="top", fill="both", expand=True)
+
+       def host_discovery_scan():
+           # open('ping_scan_results_file', 'w').close()         possible use of clearing txt
+
+           ping_scan = """
+           ls
+           nmap """ + "-sL" + """ """ + entry.get() + """> ping_scan_results_file
+           """
+
+           # subprocess.call(["ls"], shell=True)
+
+           process1 = subprocess.Popen([ping_scan], shell=True)
+
+           print(entry.get())
+
+           process1.wait()  # waits for the process to finish
+
+           file = open("ping_scan_results_file", "r")
+
+           txt = file.read()
+
+           txtResult.config(state=NORMAL)  # makes it editable to insert text
+           txtResult.delete('1.0', END)  # deletes the previous scan
+           txtResult.insert(INSERT, txt)  # inserts text into the textbox
+           txtResult.config(state=DISABLED)  # makes it uneditable again
+
+           file.close()  # terminates the resources in use
+
+       entry = tk.Entry(self)  # makes a txt box for people to enter stuff
+       entry.pack(side=BOTTOM)
+
+       txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
+       txtResult.pack()
+
+       button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black", command = host_discovery_scan)  # creates the button
+       button.pack(side = "bottom")
 
 class Page3(Page):
    def __init__(self, *args, **kwargs):
@@ -47,6 +86,19 @@ class MainView(tk.Frame):
         b1.pack(side="left")
         b2.pack(side="left")
         b3.pack(side="left")
+
+        txtDate = tk.Text(buttonframe, height=1, bg="white")
+        txtDate.pack()
+        def insert_date_time(lol, delay):
+            while True:
+                time.sleep(delay)
+                txtDate.config(state=NORMAL)
+                txtDate.delete('1.0', END)  # clears previous text
+                currentTime = datetime.datetime.now()
+                currentTime = currentTime.strftime('%H:%M:%S')  # formatting time
+                txtDate.insert(INSERT, currentTime)
+                txtDate.config(state=DISABLED)  # not editable
+        _thread.start_new_thread(insert_date_time, (None, 1))
 
         p1.show()
 
