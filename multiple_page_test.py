@@ -68,6 +68,9 @@ class Page2(Page):
            elif selection.get() == 2:
                x = "-sn"
                return x
+           else:                        # fixes the problem if no radio button was selected
+               x = "-sL"
+               return x
 
        button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black", command = host_discovery_scan)  # creates the button
        button.pack(side = "bottom")
