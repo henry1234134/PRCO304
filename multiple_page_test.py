@@ -68,7 +68,7 @@ class Page2(Page):
            elif selection.get() == 2:
                x = "-sn"
                return x
-           else:                        # fixes the problem if no radio button was selected
+           else:                        # fixes the problem if no radio button was selected by making the first choice default
                x = "-sL"
                return x
 
