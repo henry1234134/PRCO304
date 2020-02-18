@@ -122,6 +122,7 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
+    root.title("EzPz Tools")
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
     root.maxsize(1920, 1080)
