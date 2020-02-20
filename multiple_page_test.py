@@ -18,7 +18,7 @@ class Page1(Page):
 class Page2(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="This is page 2")
+       label = tk.Label(self, text="Nmap")
        label.pack(side="top", fill="both", expand=True)
        entry_valid = True
 
@@ -63,10 +63,12 @@ class Page2(Page):
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
 
+       label1 = tk.Label(self, text="Host Discovery")
+       label1.place(relx=0.025, rely=0.45, anchor=W)
+
        selection = IntVar()
        r1 = Radiobutton(self, text="List Scan", variable=selection, value=1)
        r1.place(relx=0.035, rely=0.5, anchor=W)
-
 
        r2 = Radiobutton(self, text="Ping Scan", variable=selection, value=2)
        r2.place(relx=0.035, rely=0.55, anchor=W)
