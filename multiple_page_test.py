@@ -20,36 +20,45 @@ class Page2(Page):
        Page.__init__(self, *args, **kwargs)
        label = tk.Label(self, text="This is page 2")
        label.pack(side="top", fill="both", expand=True)
+       entry_valid = True
 
        def host_discovery_scan():
+           if (entry.get() == ""):  # some basic validation
+               entry_valid = False
+           else:
+               entry_valid = True
+
            # open('ping_scan_results_file', 'w').close()         possible use of clearing txt
 
-           ping_scan = """
-           ls
-           nmap """ + get_scan_selected() + """ """ + entry.get() + """> ping_scan_results_file
-           """
+           if(entry_valid == True):
+               ping_scan = """
+               ls
+               nmap """ + get_scan_selected() + """ """ + entry.get() + """> ping_scan_results_file
+               """
 
-           # subprocess.call(["ls"], shell=True)
+               # subprocess.call(["ls"], shell=True)
 
-           process1 = subprocess.Popen([ping_scan], shell=True)
+               process1 = subprocess.Popen([ping_scan], shell=True)
 
-           print(entry.get())
+               print(entry.get())
 
-           process1.wait()  # waits for the process to finish
+               process1.wait()  # waits for the process to finish
 
-           file = open("ping_scan_results_file", "r")
+               file = open("ping_scan_results_file", "r")
 
-           txt = file.read()
+               txt = file.read()
 
-           txtResult.config(state=NORMAL)  # makes it editable to insert text
-           txtResult.delete('1.0', END)  # deletes the previous scan
-           txtResult.insert(INSERT, txt)  # inserts text into the textbox
-           txtResult.config(state=DISABLED)  # makes it uneditable again
+               txtResult.config(state=NORMAL)  # makes it editable to insert text
+               txtResult.delete('1.0', END)  # deletes the previous scan
+               txtResult.insert(INSERT, txt)  # inserts text into the textbox
+               txtResult.config(state=DISABLED)  # makes it uneditable again
 
-           file.close()  # terminates the resources in use
+               file.close()  # terminates the resources in use
 
        entry = tk.Entry(self)  # makes a txt box for people to enter stuff
        entry.pack(side=BOTTOM)
+
+
 
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
@@ -84,12 +93,12 @@ class Page3(Page):
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
-        p1 = Page1(self)
+        p1 = Page1(self)       # pages are classes
         p2 = Page2(self)
         p3 = Page3(self)
 
-        buttonframe = tk.Frame(self)
-        container = tk.Frame(self)
+        buttonframe = tk.Frame(self) # where buttons are kept
+        container = tk.Frame(self) # where pages are kept
         buttonframe.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
 
@@ -97,8 +106,8 @@ class MainView(tk.Frame):
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
-        b1 = tk.Button(buttonframe, text="Page 1", command=p1.lift)
-        b2 = tk.Button(buttonframe, text="Page 2", command=p2.lift)
+        b1 = tk.Button(buttonframe, text="Home Page", command=p1.lift)
+        b2 = tk.Button(buttonframe, text="Nmap", command=p2.lift)
         b3 = tk.Button(buttonframe, text="Page 3", command=p3.lift)
 
         b1.pack(side="left")
@@ -106,7 +115,7 @@ class MainView(tk.Frame):
         b3.pack(side="left")
 
         txtDate = tk.Text(buttonframe, height=1, bg="white")
-        txtDate.pack()
+        txtDate.pack(side="right", expand="false")
         def insert_date_time(lol, delay):
             while True:
                 time.sleep(delay)
