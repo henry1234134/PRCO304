@@ -73,6 +73,11 @@ class Page2(Page):
        r2 = Radiobutton(self, text="Ping Scan", variable=selection, value=2)
        r2.place(relx=0.035, rely=0.55, anchor=W)
 
+       label2 = tk.Label(self, text="OS Detection")
+       label2.place(relx=0.025, rely=0.60, anchor=W)
+
+       r3 = Radiobutton(self, text="OS Detection", variable=selection, value=3)
+       r3.place(relx=0.035, rely=0.65, anchor=W)
 
        def get_scan_selected():
            if selection.get() == 1:
@@ -80,6 +85,9 @@ class Page2(Page):
                return x
            elif selection.get() == 2:
                x = "-sn"
+               return x
+           elif selection.get() == 3:
+               x = "-O"
                return x
            else:                        # fixes the problem if no radio button was selected by making the first choice default
                x = "-sL"
