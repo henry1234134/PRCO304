@@ -63,7 +63,7 @@ class Page2(Page):
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
 
-       label1 = tk.Label(self, text="Host Discovery")
+       label1 = tk.Label(self, text="Host Discovery") # text
        label1.place(relx=0.025, rely=0.45, anchor=W)
 
        selection = IntVar()
