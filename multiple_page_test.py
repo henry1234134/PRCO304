@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from PIL import ImageTk, Image
 import _thread, time, datetime
 import subprocess
 
@@ -18,9 +19,9 @@ class Page1(Page):
 class Page2(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
+
        label = tk.Label(self, text="Nmap")
-       label.pack(side="top", fill="both", expand=True)
-       entry_valid = True
+       label.place(anchor=N)
 
        def host_discovery_scan():
            if (entry.get() == ""):  # some basic validation
@@ -58,7 +59,11 @@ class Page2(Page):
        entry = tk.Entry(self)  # makes a txt box for people to enter stuff
        entry.pack(side=BOTTOM)
 
-
+       nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
+       imagelbl = tk.Label(self, image=nmapimage)
+       imagelbl.image = nmapimage
+       imagelbl.pack(side=TOP, fill="both", expand="yes")
+       #image.place(x=0, y=0)
 
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
