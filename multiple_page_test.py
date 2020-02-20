@@ -65,10 +65,12 @@ class Page2(Page):
 
        selection = IntVar()
        r1 = Radiobutton(self, text="List Scan", variable=selection, value=1)
-       r1.place(relx=0.05, rely=0.9, anchor=W)
+       r1.place(relx=0.035, rely=0.5, anchor=W)
+
 
        r2 = Radiobutton(self, text="Ping Scan", variable=selection, value=2)
-       r2.place(relx=0.05, rely=0.95, anchor=W)
+       r2.place(relx=0.035, rely=0.55, anchor=W)
+
 
        def get_scan_selected():
            if selection.get() == 1:
