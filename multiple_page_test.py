@@ -20,6 +20,9 @@ class Page2(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
 
+       side_panel = Frame(self)
+       side_panel.pack(side="left", fill="y", expand=True)
+
        label = tk.Label(self, text="Nmap")
        label.pack(side=TOP)
 
@@ -68,7 +71,7 @@ class Page2(Page):
 
        nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
        nmapimage.height()
-       imagelbl = tk.Label(self, image=nmapimage)
+       imagelbl = tk.Label(side_panel, image=nmapimage)
        imagelbl.image = nmapimage
        imagelbl.pack(side=TOP, fill="both", expand="no")
        #imagelbl.place(x=0, y=0)
@@ -76,26 +79,26 @@ class Page2(Page):
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
 
-       label1 = tk.Label(self, text="Host Discovery") # text
+       label1 = tk.Label(side_panel, text="Host Discovery") # text
        label1.place(relx=0.025, rely=0.45, anchor=W)
 
        selection = IntVar()
-       r1 = Radiobutton(self, text="List Scan", variable=selection, value=1)
+       r1 = Radiobutton(side_panel, text="List Scan", variable=selection, value=1)
        r1.place(relx=0.035, rely=0.5, anchor=W)
 
-       r2 = Radiobutton(self, text="Ping Scan", variable=selection, value=2)
+       r2 = Radiobutton(side_panel, text="Ping Scan", variable=selection, value=2)
        r2.place(relx=0.035, rely=0.55, anchor=W)
 
-       label2 = tk.Label(self, text="OS Detection")
+       label2 = tk.Label(side_panel, text="OS Detection")
        label2.place(relx=0.025, rely=0.60, anchor=W)
 
-       r3 = Radiobutton(self, text="OS Detection", variable=selection, value=3)
+       r3 = Radiobutton(side_panel, text="OS Detection", variable=selection, value=3)
        r3.place(relx=0.035, rely=0.65, anchor=W)
 
-       label3 = tk.Label(self, text="Version Detection")
+       label3 = tk.Label(side_panel, text="Version Detection")
        label3.place(relx=0.025, rely=0.70, anchor=W)
 
-       r4 = Radiobutton(self, text="Version Detection", variable=selection, value=4)
+       r4 = Radiobutton(side_panel, text="Version Detection", variable=selection, value=4)
        r4.place(relx=0.035, rely=0.75, anchor=W)
 
        def get_scan_selected():
