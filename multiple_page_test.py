@@ -21,9 +21,10 @@ class Page2(Page):
        Page.__init__(self, *args, **kwargs)
 
        label = tk.Label(self, text="Nmap")
-       label.place(anchor=N)
+       label.pack(side=TOP)
 
-       def host_discovery_scan():
+       def button_press():
+
            if (entry.get() == ""):  # some basic validation
                entry_valid = False
            else:
@@ -38,6 +39,11 @@ class Page2(Page):
                """
 
                # subprocess.call(["ls"], shell=True)
+
+               txtResult.config(state=NORMAL)  # makes it editable to insert text
+               txtResult.delete('1.0', END)  # deletes the previous scan
+               txtResult.insert(INSERT, "Processing...")  # inserts text into the textbox
+               txtResult.config(state=DISABLED)  # makes it uneditable again
 
                process1 = subprocess.Popen([ping_scan], shell=True)
 
@@ -56,14 +62,16 @@ class Page2(Page):
 
                file.close()  # terminates the resources in use
 
+
        entry = tk.Entry(self)  # makes a txt box for people to enter stuff
        entry.pack(side=BOTTOM)
 
        nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
+       nmapimage.height()
        imagelbl = tk.Label(self, image=nmapimage)
        imagelbl.image = nmapimage
-       imagelbl.pack(side=TOP, fill="both", expand="yes")
-       #image.place(x=0, y=0)
+       imagelbl.pack(side=TOP, fill="both", expand="no")
+       #imagelbl.place(x=0, y=0)
 
        txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
        txtResult.pack()
@@ -84,6 +92,12 @@ class Page2(Page):
        r3 = Radiobutton(self, text="OS Detection", variable=selection, value=3)
        r3.place(relx=0.035, rely=0.65, anchor=W)
 
+       label3 = tk.Label(self, text="Version Detection")
+       label3.place(relx=0.025, rely=0.70, anchor=W)
+
+       r4 = Radiobutton(self, text="Version Detection", variable=selection, value=4)
+       r4.place(relx=0.035, rely=0.75, anchor=W)
+
        def get_scan_selected():
            if selection.get() == 1:
                x = "-sL"
@@ -94,11 +108,14 @@ class Page2(Page):
            elif selection.get() == 3:
                x = "-O"
                return x
+           elif selection.get() == 4:
+               x = "-sV"
+               return x
            else:                        # fixes the problem if no radio button was selected by making the first choice default
                x = "-sL"
                return x
 
-       button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black", command = host_discovery_scan)  # creates the button
+       button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black", command = button_press)  # creates the button
        button.pack(side = "bottom")
 
 class Page3(Page):
