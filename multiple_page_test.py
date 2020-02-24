@@ -130,6 +130,12 @@ class Page2(Page):
        entry = tk.Entry(self)  # makes a txt box for people to enter stuff
        entry.pack(side=BOTTOM)
 
+       entrylbl = tk.Label(self, text="Enter target IP")
+       entrylbl.place(relx=0.45, rely=0.94)
+
+       entryhelplbl = tk.Label(self, text="Scan a range: 192.168.0.1-10 \n Scan a subnet: 192.168.0.1/13")
+       entryhelplbl.place(relx=0.70, rely=0.94)
+
 class Page3(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
