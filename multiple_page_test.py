@@ -66,10 +66,6 @@ class Page2(Page):
 
                file.close()  # terminates the resources in use
 
-
-       entry = tk.Entry(self)  # makes a txt box for people to enter stuff
-       entry.pack(side=BOTTOM)
-
        nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
        nmapimage.height()
        imagelbl = tk.Label(side_panel, image=nmapimage, bg=themecolour)
@@ -105,7 +101,7 @@ class Page2(Page):
        label4 = tk.Label(side_panel, text="Port Scan", bg=themecolour)
        label4.place(relx=0.025, rely=0.80, anchor=W)
 
-       r5 = Radiobutton(side_panel, text="Port Scan", variable=selection, value=5, bg=themecolour)
+       r5 = Radiobutton(side_panel, text="Port Scan (All ports)", variable=selection, value=5, bg=themecolour)
        r5.place(relx=0.035, rely=0.85, anchor=W)
 
        def get_scan_selected():
@@ -130,6 +126,9 @@ class Page2(Page):
 
        button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black", command = button_press)  # creates the button
        button.pack(side = "bottom")
+
+       entry = tk.Entry(self)  # makes a txt box for people to enter stuff
+       entry.pack(side=BOTTOM)
 
 class Page3(Page):
    def __init__(self, *args, **kwargs):
