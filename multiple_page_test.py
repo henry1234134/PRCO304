@@ -76,6 +76,17 @@ class Page2(Page):
        txtResult = tk.Text(self, borderwidth=10, relief="ridge", state=DISABLED, wrap=WORD)  # this is where text is displayed
        txtResult.pack(fill="both", expand="yes")
 
+       txtResult.config(state=NORMAL)  # makes it editable to insert text
+       txtResult.insert(INSERT, '''
+___________      __________          ___________           .__          
+\_   _____/______\______   \________ \__    ___/___   ____ |  |   ______
+ |    __)_\___   /|     ___/\___   /   |    | /  _ \ /  _ \|  |  /  ___/
+ |        \/    / |    |     /    /    |    |(  <_> |  <_> )  |__\___ \ 
+/_______  /_____ \|____|    /_____ \   |____| \____/ \____/|____/____  >
+        \/      \/                \/                                 \/ 
+       ''')  # inserts brand
+       txtResult.config(state=DISABLED)  # makes it uneditable again
+
        label1 = tk.Label(side_panel, text="Host Discovery", bg=themecolour) # text
        label1.place(relx=0.025, rely=0.45, anchor=W)
 
