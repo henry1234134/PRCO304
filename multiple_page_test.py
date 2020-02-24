@@ -22,9 +22,9 @@ class Page2(Page):
        Page.__init__(self, *args, **kwargs)
 
        side_panel = Frame(self, bg=themecolour)
-       side_panel.pack(side="left", fill="both", expand=True)
+       side_panel.pack(side="left", fill="both", expand=False)
 
-       label = tk.Label(self, text="Nmap")
+       label = tk.Label(self, text="Nmap Output")
        label.pack(side=TOP)
 
        def button_press():
@@ -77,8 +77,8 @@ class Page2(Page):
        imagelbl.pack(side=TOP, fill="both", expand="no")
        #imagelbl.place(x=0, y=0)
 
-       txtResult = tk.Text(self, borderwidth=0, relief="flat", state=DISABLED)  # this is where text is displayed
-       txtResult.pack()
+       txtResult = tk.Text(self, borderwidth=10, relief="ridge", state=DISABLED, wrap=WORD)  # this is where text is displayed
+       txtResult.pack(fill="both", expand="yes")
 
        label1 = tk.Label(side_panel, text="Host Discovery", bg=themecolour) # text
        label1.place(relx=0.025, rely=0.45, anchor=W)
