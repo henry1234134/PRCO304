@@ -22,7 +22,7 @@ class Page2(Page):
        Page.__init__(self, *args, **kwargs)
 
        side_panel = Frame(self, bg=themecolour)
-       side_panel.pack(side="left", fill="y", expand=True)
+       side_panel.pack(side="left", fill="both", expand=True)
 
        label = tk.Label(self, text="Nmap")
        label.pack(side=TOP)
@@ -102,6 +102,12 @@ class Page2(Page):
        r4 = Radiobutton(side_panel, text="Version Detection", variable=selection, value=4, bg=themecolour)
        r4.place(relx=0.035, rely=0.75, anchor=W)
 
+       label4 = tk.Label(side_panel, text="Port Scan", bg=themecolour)
+       label4.place(relx=0.025, rely=0.80, anchor=W)
+
+       r5 = Radiobutton(side_panel, text="Port Scan", variable=selection, value=5, bg=themecolour)
+       r5.place(relx=0.035, rely=0.85, anchor=W)
+
        def get_scan_selected():
            if selection.get() == 1:
                x = "-sL"
@@ -114,6 +120,9 @@ class Page2(Page):
                return x
            elif selection.get() == 4:
                x = "-sV"
+               return x
+           elif selection.get() == 5:
+               x = ""
                return x
            else:                        # fixes the problem if no radio button was selected by making the first choice default
                x = "-sL"
@@ -173,5 +182,5 @@ if __name__ == "__main__":
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
     root.maxsize(1920, 1080)
-    root.minsize(900, 600)
+    root.minsize(1100, 750)
     root.mainloop()
