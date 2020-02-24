@@ -24,7 +24,7 @@ class Page2(Page):
        side_panel = Frame(self, bg=themecolour)
        side_panel.pack(side="left", fill="both", expand=False)
 
-       label = tk.Label(self, text="Nmap Output")
+       label = tk.Label(self, text="Nmap Output Screen")
        label.pack(side=TOP)
 
        def button_press():
