@@ -16,7 +16,7 @@ class Page(tk.Frame):
 class Page1(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="This is page 1")
+       label = tk.Label(self, text="EzPz Tools.\n Created by Henry Kaminarides.")
        label.pack(side="top", fill="both", expand=True)
 
 class Page2(Page):
@@ -89,32 +89,32 @@ ___________      __________          ___________           .__
        ''')  # inserts brand
        txtResult.config(state=DISABLED)  # makes it uneditable again
 
-       label1 = tk.Label(side_panel, text="Host Discovery", bg=themecolour) # text
+       label1 = tk.Label(side_panel, text="Host Discovery", bg=themecolour, fg="White", font="bold") # text
        label1.place(relx=0.025, rely=0.45, anchor=W)
 
        selection = IntVar()
-       r1 = Radiobutton(side_panel, text="List Scan", variable=selection, value=1, bg=themecolour)
+       r1 = Radiobutton(side_panel, text="List Scan", variable=selection, value=1, bg='#B3F2FF', activebackground='#FFFFA6')
        r1.place(relx=0.035, rely=0.5, anchor=W)
 
-       r2 = Radiobutton(side_panel, text="Ping Scan", variable=selection, value=2, bg=themecolour)
+       r2 = Radiobutton(side_panel, text="Ping Scan", variable=selection, value=2, bg='#B3F2FF', activebackground='#FFFFA6')
        r2.place(relx=0.035, rely=0.55, anchor=W)
 
-       label2 = tk.Label(side_panel, text="OS Detection", bg=themecolour)
+       label2 = tk.Label(side_panel, text="OS Detection", bg=themecolour, fg="White", font="bold")
        label2.place(relx=0.025, rely=0.60, anchor=W)
 
-       r3 = Radiobutton(side_panel, text="OS Detection", variable=selection, value=3, bg=themecolour)
+       r3 = Radiobutton(side_panel, text="OS Detection", variable=selection, value=3, bg='#B3F2FF', activebackground='#FFFFA6')
        r3.place(relx=0.035, rely=0.65, anchor=W)
 
-       label3 = tk.Label(side_panel, text="Version Detection", bg=themecolour)
+       label3 = tk.Label(side_panel, text="Version Detection", bg=themecolour, fg="White", font="bold")
        label3.place(relx=0.025, rely=0.70, anchor=W)
 
-       r4 = Radiobutton(side_panel, text="Version Detection", variable=selection, value=4, bg=themecolour)
+       r4 = Radiobutton(side_panel, text="Version Detection", variable=selection, value=4, bg='#B3F2FF', activebackground='#FFFFA6')
        r4.place(relx=0.035, rely=0.75, anchor=W)
 
-       label4 = tk.Label(side_panel, text="Port Scan", bg=themecolour)
+       label4 = tk.Label(side_panel, text="Port Scan", bg=themecolour, fg="White", font="bold")
        label4.place(relx=0.025, rely=0.80, anchor=W)
 
-       r5 = Radiobutton(side_panel, text="Port Scan (All ports)", variable=selection, value=5, bg=themecolour)
+       r5 = Radiobutton(side_panel, text="Port Scan (All ports)", variable=selection, value=5, bg='#B3F2FF', activebackground='#FFFFA6')
        r5.place(relx=0.035, rely=0.85, anchor=W)
 
        def get_scan_selected():
@@ -179,7 +179,7 @@ class MainView(tk.Frame):
         b2.pack(side="left")
         b3.pack(side="left")
 
-        txtDate = tk.Text(buttonframe, height=1, bg="white")
+        txtDate = tk.Text(buttonframe, height=1, bg="white", width=8)
         txtDate.pack(side="right", expand="false")
         def insert_date_time(lol, delay):
             while True:
