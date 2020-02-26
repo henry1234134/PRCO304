@@ -5,6 +5,8 @@ import _thread, time, datetime
 import subprocess
 
 themecolour = '#6374A3'
+toolbarcolour = "#32435E"
+
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -142,7 +144,7 @@ ___________      __________          ___________           .__
        entry.pack(side=BOTTOM)
 
        entrylbl = tk.Label(self, text="Enter target IP")
-       entrylbl.place(relx=0.45, rely=0.94)
+       entrylbl.place(relx=0.44, rely=0.94)
 
        entryhelplbl = tk.Label(self, text="Scan a range: 192.168.0.1-10 \n Scan a subnet: 192.168.0.1/13")
        entryhelplbl.place(relx=0.70, rely=0.94)
@@ -160,7 +162,7 @@ class MainView(tk.Frame):
         p2 = Page2(self)
         p3 = Page3(self)
 
-        buttonframe = tk.Frame(self) # where buttons are kept
+        buttonframe = tk.Frame(self, bg=toolbarcolour) # where buttons are kept
         container = tk.Frame(self) # where pages are kept
         buttonframe.pack(side="top", fill="x", expand=False)
         container.pack(side="top", fill="both", expand=True)
@@ -169,9 +171,9 @@ class MainView(tk.Frame):
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
-        b1 = tk.Button(buttonframe, text="Home Page", command=p1.lift)
-        b2 = tk.Button(buttonframe, text="Nmap", command=p2.lift)
-        b3 = tk.Button(buttonframe, text="Page 3", command=p3.lift)
+        b1 = tk.Button(buttonframe, text="Home Page", command=p1.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
+        b2 = tk.Button(buttonframe, text="Nmap", command=p2.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
+        b3 = tk.Button(buttonframe, text="Page 3", command=p3.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
 
         b1.pack(side="left")
         b2.pack(side="left")
