@@ -16,7 +16,7 @@ class Page(tk.Frame):
 class Page1(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="EzPz Tools.\n Created by Henry Kaminarides.")
+       label = tk.Label(self, text="EzPz Tools.\n The all in one user friendly pentesting tool for Kali Linux. \n Created by Henry Kaminarides.")
        label.pack(side="top", fill="both", expand=True)
 
 class Page2(Page):
@@ -158,8 +158,28 @@ ___________      __________          ___________           .__
 class Page3(Page):
    def __init__(self, *args, **kwargs):
        Page.__init__(self, *args, **kwargs)
-       label = tk.Label(self, text="This is page 3")
+       label = tk.Label(self, text="Metasploit")
        label.pack(side="top", fill="both", expand=True)
+
+       metasploit_commands = '''
+       ls > ms_results
+       '''
+       ms_process = subprocess.Popen([metasploit_commands], shell=True)
+
+       #process1.wait()  # waits for the process to finish
+
+       file = open("ms_results", "r")
+
+       txt = file.read()
+       print(txt)
+'''
+       txtResult.config(state=NORMAL)  # makes it editable to insert text
+       txtResult.delete('1.0', END)  # deletes the previous scan
+       txtResult.insert(INSERT, txt)  # inserts text into the textbox
+       txtResult.config(state=DISABLED)  # makes it uneditable again
+'''
+       #file.close()  # terminates the resources in use
+
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -179,7 +199,7 @@ class MainView(tk.Frame):
 
         b1 = tk.Button(buttonframe, text="Home Page", command=p1.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
         b2 = tk.Button(buttonframe, text="Nmap", command=p2.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
-        b3 = tk.Button(buttonframe, text="Page 3", command=p3.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
+        b3 = tk.Button(buttonframe, text="Metasploit", command=p3.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
 
         b1.pack(side="left")
         b2.pack(side="left")
