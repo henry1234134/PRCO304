@@ -171,13 +171,15 @@ class Page3(Page):
        #ms_process.communicate(input= 'ls -a > ms_results'.encode()) # a byte object is required
        #ms_process.wait()
 
-       p1 = subprocess.Popen('pwd > test', shell=True, stdin=PIPE, text=True)
+       #p1 = subprocess.Popen('pwd > test', shell=True, stdin=PIPE, text=True)
        #p1.communicate(input="ls > test")
        #p1.communicate('pwd > test\n')
        #p1.stdin.write('pwd > test')
 
        #['pwd','>','test']    'pwd > test\n'
 
+       p1 = subprocess.Popen('bash', stdin=PIPE, text=True)
+       p1.stdin.write('pwd > test')
 
        file = open("ms_results", "r")
 
