@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
 import _thread, time, datetime
+from subprocess import PIPE
 import subprocess
 
 themecolour = '#6374A3'
@@ -164,14 +165,24 @@ class Page3(Page):
        metasploit_commands = '''
        ls > ms_results
        '''
-       ms_process = subprocess.Popen([metasploit_commands], shell=True)
+       #ms_process = subprocess.Popen([metasploit_commands], shell=True, stdin=PIPE)
+       #ms_process.communicate(input=b'echo poo > ms_results')
+       #ms_process.stdin.close()
+       #ms_process.communicate(input= 'ls -a > ms_results'.encode()) # a byte object is required
+       #ms_process.wait()
 
-       #process1.wait()  # waits for the process to finish
+       p1 = subprocess.Popen('pwd > test', shell=True, stdin=PIPE, text=True)
+       #p1.communicate(input="ls > test")
+       #p1.communicate('pwd > test\n')
+       #p1.stdin.write('pwd > test')
+
+       #['pwd','>','test']    'pwd > test\n'
+
 
        file = open("ms_results", "r")
 
        txt = file.read()
-       print(txt)
+       #print(txt)
 '''
        txtResult.config(state=NORMAL)  # makes it editable to insert text
        txtResult.delete('1.0', END)  # deletes the previous scan
