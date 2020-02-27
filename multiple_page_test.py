@@ -75,8 +75,14 @@ class Page2(Page):
        imagelbl.pack(side=TOP, fill="both", expand="no")
        #imagelbl.place(x=0, y=0)
 
-       txtResult = tk.Text(self, borderwidth=10, relief="ridge", state=DISABLED, wrap=WORD)  # this is where text is displayed
+       frameScrollBar = tk.Scrollbar(self)
+       frameScrollBar.pack(side=RIGHT, fill=Y)
+
+       txtResult = tk.Text(self, borderwidth=10, relief="ridge", state=DISABLED, wrap=WORD, yscrollcommand=frameScrollBar.set)  # this is where text is displayed
        txtResult.pack(fill="both", expand="yes")
+
+
+
 
        txtResult.config(state=NORMAL)  # makes it editable to insert text
        txtResult.insert(INSERT, '''
@@ -144,7 +150,7 @@ ___________      __________          ___________           .__
        entry.pack(side=BOTTOM)
 
        entrylbl = tk.Label(self, text="Enter target IP")
-       entrylbl.place(relx=0.44, rely=0.94)
+       entrylbl.place(relx=0.435, rely=0.935)
 
        entryhelplbl = tk.Label(self, text="Scan a range: 192.168.0.1-10 \n Scan a subnet: 192.168.0.1/13")
        entryhelplbl.place(relx=0.70, rely=0.94)
