@@ -174,6 +174,7 @@ class Page3(Page):
        p1.stdin.write(b'help\n')
        p1.stdin.flush()
        p1.stdin.write(b'spool /root/msf_output.txt\n')
+       p1.stdin.flush()
        sys.stdout.write('help\n')
 
 class MainView(tk.Frame):
