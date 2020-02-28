@@ -173,15 +173,28 @@ class Page3(Page):
        p1.stdin.write('spool /root/msf_output.txt\n') # redirects output of metasploit to a text file
        p1.stdin.flush()
 
+       txtbox = tk.Text(self)
+       txtbox.pack(side="top")
+
        entry = tk.Entry(self)
        entry.pack()
 
        def search_vulns():
+           open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
            p1.stdin.write('search ' + entry.get() +'\n')
            p1.stdin.flush()
+           time.sleep(2)
+           file = open('/root/msf_output.txt', "r")
 
-       search_vuln_btn = tk.Button(self, command=search_vulns)
+           txt = file.read()
+
+           txtbox.insert(INSERT, txt)
+
+
+
+       search_vuln_btn = tk.Button(self, command=search_vulns, text='Search vulnerabilities')
        search_vuln_btn.pack()
+
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
