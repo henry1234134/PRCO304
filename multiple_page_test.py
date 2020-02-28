@@ -3,7 +3,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import _thread, time, datetime
 from subprocess import PIPE
-import subprocess
+import subprocess, io
 
 themecolour = '#6374A3'
 toolbarcolour = "#32435E"
@@ -165,21 +165,29 @@ class Page3(Page):
        metasploit_commands = '''
        ls > ms_results
        '''
-       #ms_process = subprocess.Popen([metasploit_commands], shell=True, stdin=PIPE)
-       #ms_process.communicate(input=b'echo poo > ms_results')
-       #ms_process.stdin.close()
-       #ms_process.communicate(input= 'ls -a > ms_results'.encode()) # a byte object is required
-       #ms_process.wait()
 
-       #p1 = subprocess.Popen('pwd > test', shell=True, stdin=PIPE, text=True)
-       #p1.communicate(input="ls > test")
-       #p1.communicate('pwd > test\n')
-       #p1.stdin.write('pwd > test')
+       p1 = subprocess.Popen('bash', stdin=PIPE, stdout=PIPE, text=True, bufsize=1) #stderr=PIPE to not show up errors directly on console
 
-       #['pwd','>','test']    'pwd > test\n'
+       p1.stdin.write('msfconsole\n') #\n recreated pressing enter
+       #time.sleep(8)
+       #p1.stdin.flush()
+       p1.stdin.write('spool /root/msf_output.txt\n') #redirect msfconsole output
+       #p1.stdin.flush()
+       p1.stdin.write('search windows 7\n')
+       #p1.stdin.flush()
+       #p1.communicate('spool /root/msf_output.txt\n')
+       #p1.stdin.write('search windows 7\n')
+       #p1.stdin.flush()
 
-       p1 = subprocess.Popen('bash', stdin=PIPE, text=True)
-       p1.stdin.write('pwd > test')
+
+
+       '''while p1.poll() is None: # if it is none the process is running
+           print("Still loading")
+           #for line in io.TextIOWrapper(p1.stdout, encoding="UTF-8"):
+              # print(line)
+              
+        '''
+       print("msfconsole loaded")
 
        file = open("ms_results", "r")
 
