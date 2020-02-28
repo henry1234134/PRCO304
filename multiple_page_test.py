@@ -167,15 +167,13 @@ class Page3(Page):
        msfconsole
        
         '''
-
+       open('/root/msf_output.txt', 'w').close() # deletes previous log file created
        p1 = subprocess.Popen(msfconsole_commands, stdin=PIPE, shell=True)
-       #time.sleep(7)
-       #os.write(1, b'help')
-       p1.stdin.write(b'help\n')
+       p1.stdin.write(b'spool /root/msf_output.txt\n') # redirects output of metasploit to a text file
        p1.stdin.flush()
-       p1.stdin.write(b'spool /root/msf_output.txt\n')
+       p1.stdin.write(b'search windows xp\n')
        p1.stdin.flush()
-       sys.stdout.write('help\n')
+
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
