@@ -173,8 +173,8 @@ class Page3(Page):
        p1.stdin.write('spool /root/msf_output.txt\n') # redirects output of metasploit to a text file
        p1.stdin.flush()
 
-       txtbox = tk.Text(self)
-       txtbox.pack(side="top")
+       txtbox = tk.Text(self, wrap=WORD)
+       txtbox.pack(fill="both")
 
        entry = tk.Entry(self)
        entry.pack()
