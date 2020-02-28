@@ -163,17 +163,25 @@ class Page3(Page):
        label = tk.Label(self, text="Metasploit")
        label.pack(side="top", fill="both", expand=True)
 
-       msfconsole_commands = '''
+       # the initiation of metasploit on startup
+       msfconsole_commands = ''' 
        msfconsole
        
         '''
        open('/root/msf_output.txt', 'w').close() # deletes previous log file created
-       p1 = subprocess.Popen(msfconsole_commands, stdin=PIPE, shell=True)
-       p1.stdin.write(b'spool /root/msf_output.txt\n') # redirects output of metasploit to a text file
-       p1.stdin.flush()
-       p1.stdin.write(b'search windows xp\n')
+       p1 = subprocess.Popen(msfconsole_commands, stdin=PIPE, shell=True, text=True)
+       p1.stdin.write('spool /root/msf_output.txt\n') # redirects output of metasploit to a text file
        p1.stdin.flush()
 
+       entry = tk.Entry(self)
+       entry.pack()
+
+       def search_vulns():
+           p1.stdin.write('search ' + entry.get() +'\n')
+           p1.stdin.flush()
+
+       search_vuln_btn = tk.Button(self, command=search_vulns)
+       search_vuln_btn.pack()
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
