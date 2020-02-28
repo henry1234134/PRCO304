@@ -3,7 +3,8 @@ from tkinter import *
 from PIL import ImageTk, Image
 import _thread, time, datetime
 from subprocess import PIPE
-import subprocess, io
+import subprocess
+import os, sys
 
 themecolour = '#6374A3'
 toolbarcolour = "#32435E"
@@ -162,45 +163,18 @@ class Page3(Page):
        label = tk.Label(self, text="Metasploit")
        label.pack(side="top", fill="both", expand=True)
 
-       metasploit_commands = '''
-       ls > ms_results
-       '''
-
-       p1 = subprocess.Popen('bash', stdin=PIPE, stdout=PIPE, text=True, bufsize=1) #stderr=PIPE to not show up errors directly on console
-
-       p1.stdin.write('msfconsole\n') #\n recreated pressing enter
-       #time.sleep(8)
-       #p1.stdin.flush()
-       p1.stdin.write('spool /root/msf_output.txt\n') #redirect msfconsole output
-       #p1.stdin.flush()
-       p1.stdin.write('search windows 7\n')
-       #p1.stdin.flush()
-       #p1.communicate('spool /root/msf_output.txt\n')
-       #p1.stdin.write('search windows 7\n')
-       #p1.stdin.flush()
-
-
-
-       '''while p1.poll() is None: # if it is none the process is running
-           print("Still loading")
-           #for line in io.TextIOWrapper(p1.stdout, encoding="UTF-8"):
-              # print(line)
-              
+       msfconsole_commands = '''
+       msfconsole
+       
         '''
-       print("msfconsole loaded")
 
-       file = open("ms_results", "r")
-
-       txt = file.read()
-       #print(txt)
-'''
-       txtResult.config(state=NORMAL)  # makes it editable to insert text
-       txtResult.delete('1.0', END)  # deletes the previous scan
-       txtResult.insert(INSERT, txt)  # inserts text into the textbox
-       txtResult.config(state=DISABLED)  # makes it uneditable again
-'''
-       #file.close()  # terminates the resources in use
-
+       p1 = subprocess.Popen(msfconsole_commands, stdin=PIPE, shell=True)
+       #time.sleep(7)
+       #os.write(1, b'help')
+       p1.stdin.write(b'help\n')
+       p1.stdin.flush()
+       p1.stdin.write(b'spool /root/msf_output.txt\n')
+       sys.stdout.write('help\n')
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
