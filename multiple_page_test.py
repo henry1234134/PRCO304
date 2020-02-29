@@ -182,13 +182,20 @@ class Page3(Page):
        def search_vulns():
            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
            p1.stdin.write('search ' + entry.get() +'\n')
-           p1.stdin.flush()
-           time.sleep(2)
-           file = open('/root/msf_output.txt', "r")
+           p1.stdin.flush() # clears the previous input
+           time.sleep(2) # gives time for it to be written to file
 
-           txt = file.read()
+           #file = open('/root/msf_output.txt', "r")
 
-           txtbox.insert(INSERT, txt)
+           #txt = file.read()
+
+           with open('/root/msf_output.txt', "r") as lines:
+               for line in lines:
+                   #print(line[5:15])
+                   if line.find("exploit")>0: # prevents the next line being taken for the next iteration
+                       num = int(line.find("exploit")) # searches for the first index of the word exploit
+                       txtbox.insert(INSERT, line[num-1:] + '\n') # prints out output of the rest of the line after exploit
+           #txtbox.insert(INSERT, txt)
 
 
 
