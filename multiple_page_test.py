@@ -188,7 +188,7 @@ class Page3(Page):
        def search_vulns():
            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
            txtbox.delete('1.0', END)  # deletes the previous scan
-           p1.stdin.write('search type:exploit platform:' + entry.get() +'\n') #specifying search
+           p1.stdin.write('search platform:' + entry.get() +'\n') #specifying search
            p1.stdin.flush() # clears the previous input
            time.sleep(2) # gives time for it to be written to file
 
@@ -201,10 +201,10 @@ class Page3(Page):
                    #print(line[5:15])
                    if line.find("exploit")>0: # prevents the next line being taken for the next iteration
                        num = int(line.find("exploit")) # searches for the index of the word exploit
-                       line_found = line[num-1:]
+                       line_found = line[num-1:] #grabs the line of the word exploit in
                        line_found = line_found.split() # splits the sentence for each space
-                       print(line_found)
-                       txtbox.insert(INSERT, line_found[0]+ '\n') # prints out output of the rest of the line after exploit
+                       #print(line_found)
+                       txtbox.insert(INSERT, line_found[0]+ '\n') # prints out the first sentence
            #txtbox.insert(INSERT, txt)
 
        #make it search specific of platform:(Windows x) and type:(exploit),(auxiliary), (post)
