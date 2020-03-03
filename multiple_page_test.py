@@ -162,6 +162,7 @@ class Page3(Page):
        Page.__init__(self, *args, **kwargs)
        label = tk.Label(self, text="Metasploit")
        label.pack(side="top", fill="both", expand=True)
+       exploit_list = list()
 
        # the initiation of metasploit on startup
        msfconsole_commands = ''' 
@@ -185,15 +186,15 @@ class Page3(Page):
        entry = tk.Entry(self)
        entry.pack()
 
-       lstbox = tk.Listbox(self)
-       lstbox.pack()
+       lstbox = tk.Listbox(outputframe)
+       lstbox.pack(fill=BOTH)
 
-       def search_vulns(self):
+       def search_vulns():
            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
            txtbox.delete('1.0', END)  # deletes the previous scan
            exploit_list = list() # instantiates list of exploits
            count = 1 # number used for adding to listbox
-           lstbox.delete(0,tk.END)
+           lstbox.delete(0,tk.END) # clears the listbox of the previous scan
 
            p1.stdin.write('search platform:' + entry.get() +'\n') #specifying search
            p1.stdin.flush() # clears the previous input
@@ -212,8 +213,9 @@ class Page3(Page):
                        line_found = line_found.split() # splits the sentence for each space
                        exploit_list.append(line_found[0]) # adds the first word to list
                        txtbox.insert(INSERT, line_found[0]+ '\n') # prints out the first sentence
-                       lstbox.insert(count, line_found[0])
+                       lstbox.insert(count, line_found[0]) # adds it to the listbox for the user to choose from
                        count = count+1
+
            #txtbox.insert(INSERT, txt)
 
        #make it search specific of platform:(Windows x) and type:(exploit),(auxiliary), (post)
@@ -223,7 +225,23 @@ class Page3(Page):
        #set options
        #run
 
-       search_vuln_btn = tk.Button(self, command= lambda: search_vulns(self), text='Search vulnerabilities')
+       txtLbl = tk.Label(self, text="K")
+       txtLbl.pack()
+
+       def check_selected():
+           self.after(200, check_selected)
+           L = lstbox.curselection()
+           #text = str(exploit_list[L])
+           try:                            # try and except due to lstbox not having an index on start
+                txtLbl.config(text=lstbox.get(L[0]))
+           except:
+                pass
+           #print(selection)
+
+       check_selected()
+
+
+       search_vuln_btn = tk.Button(self, command=search_vulns, text='Search vulnerabilities')
        search_vuln_btn.pack()
 
 
