@@ -173,7 +173,13 @@ class Page3(Page):
        p1.stdin.write('spool /root/msf_output.txt\n') # redirects output of metasploit to a text file
        p1.stdin.flush()
 
-       txtbox = tk.Text(self, wrap=WORD)
+       outputframe = tk.Frame(self)
+       outputframe.pack(fill=BOTH)
+
+       frameScrollBar = tk.Scrollbar(outputframe)
+       frameScrollBar.pack(side=RIGHT, fill=Y)
+
+       txtbox = tk.Text(outputframe, wrap=WORD, yscrollcommand=frameScrollBar.set)
        txtbox.pack(fill="both")
 
        entry = tk.Entry(self)
@@ -181,7 +187,8 @@ class Page3(Page):
 
        def search_vulns():
            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
-           p1.stdin.write('search ' + entry.get() +'\n')
+           txtbox.delete('1.0', END)  # deletes the previous scan
+           p1.stdin.write('search type:exploit platform:' + entry.get() +'\n') #specifying search
            p1.stdin.flush() # clears the previous input
            time.sleep(2) # gives time for it to be written to file
 
@@ -189,15 +196,23 @@ class Page3(Page):
 
            #txt = file.read()
 
-           with open('/root/msf_output.txt', "r") as lines:
+           with open('/root/msf_output.txt', "r") as lines: # edits the output
                for line in lines:
                    #print(line[5:15])
                    if line.find("exploit")>0: # prevents the next line being taken for the next iteration
-                       num = int(line.find("exploit")) # searches for the first index of the word exploit
-                       txtbox.insert(INSERT, line[num-1:] + '\n') # prints out output of the rest of the line after exploit
+                       num = int(line.find("exploit")) # searches for the index of the word exploit
+                       line_found = line[num-1:]
+                       line_found = line_found.split() # splits the sentence for each space
+                       print(line_found)
+                       txtbox.insert(INSERT, line_found[0]+ '\n') # prints out output of the rest of the line after exploit
            #txtbox.insert(INSERT, txt)
 
-
+       #make it search specific of platform:(Windows x) and type:(exploit),(auxiliary), (post)
+       #use of drop downs again
+       #use exploit
+       #show options
+       #set options
+       #run
 
        search_vuln_btn = tk.Button(self, command=search_vulns, text='Search vulnerabilities')
        search_vuln_btn.pack()
