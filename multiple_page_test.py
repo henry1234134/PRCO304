@@ -185,9 +185,16 @@ class Page3(Page):
        entry = tk.Entry(self)
        entry.pack()
 
-       def search_vulns():
+       lstbox = tk.Listbox(self)
+       lstbox.pack()
+
+       def search_vulns(self):
            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
            txtbox.delete('1.0', END)  # deletes the previous scan
+           exploit_list = list() # instantiates list of exploits
+           count = 1 # number used for adding to listbox
+           lstbox.delete(0,tk.END)
+
            p1.stdin.write('search platform:' + entry.get() +'\n') #specifying search
            p1.stdin.flush() # clears the previous input
            time.sleep(2) # gives time for it to be written to file
@@ -203,8 +210,10 @@ class Page3(Page):
                        num = int(line.find("exploit")) # searches for the index of the word exploit
                        line_found = line[num-1:] #grabs the line of the word exploit in
                        line_found = line_found.split() # splits the sentence for each space
-                       #print(line_found)
+                       exploit_list.append(line_found[0]) # adds the first word to list
                        txtbox.insert(INSERT, line_found[0]+ '\n') # prints out the first sentence
+                       lstbox.insert(count, line_found[0])
+                       count = count+1
            #txtbox.insert(INSERT, txt)
 
        #make it search specific of platform:(Windows x) and type:(exploit),(auxiliary), (post)
@@ -214,7 +223,7 @@ class Page3(Page):
        #set options
        #run
 
-       search_vuln_btn = tk.Button(self, command=search_vulns, text='Search vulnerabilities')
+       search_vuln_btn = tk.Button(self, command= lambda: search_vulns(self), text='Search vulnerabilities')
        search_vuln_btn.pack()
 
 
