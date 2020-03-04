@@ -162,7 +162,6 @@ class Page3(Page):
        Page.__init__(self, *args, **kwargs)
        label = tk.Label(self, text="Metasploit")
        label.pack(side="top", fill="both", expand=True)
-       exploit_list = list()
 
        # the initiation of metasploit on startup
        msfconsole_commands = ''' 
@@ -188,6 +187,7 @@ class Page3(Page):
 
        lstbox = tk.Listbox(outputframe)
        lstbox.pack(fill=BOTH)
+       #L = lstbox.curselection()
 
        def search_vulns():
            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
@@ -218,8 +218,7 @@ class Page3(Page):
 
            #txtbox.insert(INSERT, txt)
 
-       #make it search specific of platform:(Windows x) and type:(exploit),(auxiliary), (post)
-       #use of drop downs again
+
        #use exploit
        #show options
        #set options
@@ -229,19 +228,27 @@ class Page3(Page):
        txtLbl.pack()
 
        def check_selected():
-           self.after(200, check_selected)
+           self.after(200, check_selected) # every 200ms rerun function
            L = lstbox.curselection()
            #text = str(exploit_list[L])
            try:                            # try and except due to lstbox not having an index on start
                 txtLbl.config(text=lstbox.get(L[0]))
+                button = tk.Button(self, text="Use Exploit", command=use_exploit)
+                button.pack()
+                return lstbox.get(L[0]) # so i can use the selected exploit
+
            except:
                 pass
            #print(selection)
 
+       def use_exploit():
+           p1.stdin.write('use ' + check_selected() + '\n')
+           p1.stdin.flush()
+
        check_selected()
 
 
-       search_vuln_btn = tk.Button(self, command=search_vulns, text='Search vulnerabilities')
+       search_vuln_btn = tk.Button(self, command=search_vulns, text='Search Exploits')
        search_vuln_btn.pack()
 
 
