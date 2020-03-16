@@ -27,10 +27,6 @@ class Page1(Page):
         imagelbl.image = logo
         imagelbl.pack()
 
-        label = tk.Label(self,
-                         text="EzPz Tools.\n The all in one user friendly pentesting tool for Kali Linux. \n Created by Henry Kaminarides.")
-        label.pack(fill="both", expand=FALSE)
-
 
 class Page2(Page):
     def __init__(self, *args, **kwargs):
