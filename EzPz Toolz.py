@@ -21,15 +21,15 @@ class Page(tk.Frame):
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self,
-                         text="EzPz Tools.\n The all in one user friendly pentesting tool for Kali Linux. \n Created by Henry Kaminarides.")
-        label.pack(side="top", fill="both", expand=True)
 
         logo = ImageTk.PhotoImage(Image.open("Images/EzPz Toolz Logo.png"))
-        # msimage.height()
         imagelbl = tk.Label(self, image=logo)
         imagelbl.image = logo
-        imagelbl.pack(side=TOP, fill="both", expand="no")
+        imagelbl.pack()
+
+        label = tk.Label(self,
+                         text="EzPz Tools.\n The all in one user friendly pentesting tool for Kali Linux. \n Created by Henry Kaminarides.")
+        label.pack(fill="both", expand=FALSE)
 
 
 class Page2(Page):
@@ -37,7 +37,7 @@ class Page2(Page):
         Page.__init__(self, *args, **kwargs)
 
         side_panel = Frame(self, bg=themecolour)
-        side_panel.pack(side="left", fill="both", expand=False)
+        side_panel.pack(side="left", fill="both", expand=FALSE)
 
         label = tk.Label(self, text="Nmap Output Screen")
         label.pack(side=TOP)
@@ -82,7 +82,6 @@ class Page2(Page):
                 file.close()  # terminates the resources in use
 
         nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
-        nmapimage.height()
         imagelbl = tk.Label(side_panel, image=nmapimage, bg=themecolour)
         imagelbl.image = nmapimage
         imagelbl.pack(side=TOP, fill="both", expand="no")
