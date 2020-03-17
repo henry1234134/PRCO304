@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import messagebox
 from PIL import ImageTk, Image
 import _thread, time, datetime
 from subprocess import PIPE
@@ -192,13 +193,13 @@ class Page3(Page):
         imagelbl.pack(side=TOP, fill="both", expand="no")
 
         outputframe = tk.Frame(self)
-        outputframe.pack(fill=BOTH, side=TOP, expand=TRUE)
+        outputframe.pack(fill=BOTH, side=TOP, expand=TRUE) # used for the list of vulnerabilities
 
-        optionsframe = tk.Frame(sidebarframe, bg=themecolour)  # used to remove multiple options
+        inputframe = tk.Frame(self)
+        inputframe.pack(fill=BOTH, side=BOTTOM, expand=FALSE)
+
+        optionsframe = tk.Frame(self)  # frame inside sidebar frame used to contain and remove exploit options
         optionsframe.pack(fill=BOTH, expand=FALSE)
-
-        frameScrollBar = tk.Scrollbar(outputframe)
-        frameScrollBar.pack(side=RIGHT, fill=Y)
 
         # buttonsframe = tk.Frame(self)
         # buttonsframe.pack(fill=BOTH, expand=TRUE)
@@ -206,11 +207,14 @@ class Page3(Page):
         # txtbox = tk.Text(outputframe, wrap=WORD, yscrollcommand=frameScrollBar.set)
         # txtbox.pack(fill="both")
 
+        frameScrollBar = tk.Scrollbar(outputframe)
+        frameScrollBar.pack(side=RIGHT, fill=Y)
+
         lstbox = tk.Listbox(outputframe, yscrollcommand=frameScrollBar.set)
-        lstbox.pack(fill=BOTH, expand=TRUE)
+        lstbox.pack(side=LEFT, fill=BOTH, expand=TRUE)
         # L = lstbox.curselection()
 
-        entry = tk.Entry(self)
+        entry = tk.Entry(inputframe)
         entry.pack()
 
         def search_vulns():
@@ -224,28 +228,22 @@ class Page3(Page):
             p1.stdin.flush()  # clears the previous input
             time.sleep(2)  # gives time for it to be written to file
 
-            # file = open('/root/msf_output.txt', "r")
-
-            # txt = file.read()
-
             with open('/root/msf_output.txt', "r") as lines:  # edits the output
                 for line in lines:
-                    # print(line[5:15])
                     if line.find("exploit") > 0:  # prevents the next line being taken for the next iteration
                         num = int(line.find("exploit"))  # searches for the index of the word exploit
                         line_found = line[num - 1:]  # grabs the line of the word exploit in
                         line_found = line_found.split()  # splits the sentence for each space
                         exploit_list.append(line_found[0])  # adds the first word to list
-                        # txtbox.insert(INSERT, line_found[0]+ '\n') # prints out the first sentence
                         lstbox.insert(count, line_found[0])  # adds it to the listbox for the user to choose from
                         count = count + 1
-
-            # txtbox.insert(INSERT, txt)
 
         d = list()  # to store user input for options
         options_list = list()
 
         def run_exploit():
+            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
+
             for i in range(len(d)):  # sets all of the options needed to run the exploit
                 user_input = d[i]
                 value = user_input.get()
@@ -255,8 +253,17 @@ class Page3(Page):
             p1.stdin.write('exploit\n')  # runs exploit
             p1.stdin.flush()
 
-        txtLbl = tk.Label(self, text="Platform/Protocol:")
-        txtLbl.place(relx=0.42, rely=0.94)
+            time.sleep(10)
+            with open('/root/msf_output.txt', "r") as lines:  # edits the output
+                for line in lines:
+                    if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
+                        num = int(line.find("Exploit"))  # searches for the index of the word exploit
+                        line_found = line[num - 1:]  # grabs the line of the word exploit in
+
+            messagebox.showinfo("Message", line_found)
+
+        txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
+        txtLbl.place(relx=0.23, rely=0.2)
 
         exploit_btn_packed = False
 
@@ -269,8 +276,8 @@ class Page3(Page):
                 # txtLbl.config(text=lstbox.get(L[0]))
                 # show targets
                 if exploit_btn_packed == False and L[0] != None:  # makes sure that something has been selected
-                    button = tk.Button(outputframe, text="Use Exploit", command=use_exploit)
-                    button.place(relx=0.61, rely=0.94)
+                    button = tk.Button(inputframe, text="Use Exploit", command=use_exploit)
+                    button.place(relx=0.62, rely=0.2)
                     exploit_btn_packed = True
                 return lstbox.get(L[0])  # so i can use the selected exploit
 
@@ -283,6 +290,11 @@ class Page3(Page):
             for widget in optionsframe.winfo_children():  # deletes everything in the previous input frame
                 widget.destroy()
 
+            outputframe.pack_forget()
+            inputframe.pack_forget()
+
+            optionsframe.pack(fill=BOTH, expand=FALSE)
+
             p1.stdin.write('use ' + check_selected() + '\n')
             p1.stdin.flush()
             open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
@@ -290,7 +302,7 @@ class Page3(Page):
             p1.stdin.flush()
 
             time.sleep(2)  # gives time to write to file
-
+            #outputframe.pack()
             with open('/root/msf_output.txt',
                       "r") as lines:  # edits the output to find what needs to be inputted by the user for the exploit to run
                 for line in lines:
@@ -301,9 +313,9 @@ class Page3(Page):
                         if line_found[1] == 'yes':
                             options_list.append(line_found[0])  # adds the first word to the list
 
-            for i in range(len(options_list)):
+            for i in range(len(options_list)): # this outputs what needs to be changed for the user
                 # print("This needs to be changed: " + options_list[i]+'\n')
-                tk.Label(optionsframe, text=options_list[i], bg=themecolour, fg='White', font='bold').pack()
+                tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
                 d.append(Entry(
                     optionsframe))  # I had to store the tkinter entry widget in a list because it is in a loop and i need to reference each one
                 entry = d[i]  # retrieving from list
@@ -312,9 +324,20 @@ class Page3(Page):
             run_exploitbtn = tk.Button(optionsframe, text='Run exploit', command=run_exploit)
             run_exploitbtn.pack()
 
+            def back():
+                d.clear() #clears the previous lists
+                options_list.clear()
+
+                optionsframe.pack_forget()
+                outputframe.pack(fill=BOTH, side=TOP, expand=TRUE)
+                inputframe.pack(fill=BOTH, side=BOTTOM, expand=FALSE)
+
+            backbtn = tk.Button(optionsframe, text='Back', command=back)
+            backbtn.pack()
+
         check_selected()
 
-        search_vuln_btn = tk.Button(self, command=search_vulns, text='Search Exploits')
+        search_vuln_btn = tk.Button(inputframe, command=search_vulns, text='Search Exploits')
         search_vuln_btn.pack()
 
 
@@ -333,6 +356,7 @@ class MainView(tk.Frame):
         p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+
 
         b1 = tk.Button(buttonframe, text="Home Page", command=p1.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
         b2 = tk.Button(buttonframe, text="Nmap", command=p2.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
