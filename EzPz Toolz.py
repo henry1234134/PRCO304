@@ -140,7 +140,7 @@ ___________      __________          ___________           .__
                 x = "-sL"
                 return x
             elif selection.get() == 2:
-                x = "-sn"
+                x = "-sP"
                 return x
             elif selection.get() == 3:
                 x = "-O"
@@ -253,13 +253,17 @@ class Page3(Page):
             p1.stdin.write('exploit\n')  # runs exploit
             p1.stdin.flush()
 
-            time.sleep(10)
+            time.sleep(15)
             with open('/root/msf_output.txt', "r") as lines:  # edits the output
                 for line in lines:
                     if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
                         num = int(line.find("Exploit"))  # searches for the index of the word exploit
                         line_found = line[num - 1:]  # grabs the line of the word exploit in
-
+                    if line.find("] Command shell") > 0:  # prevents the next line being taken for the next iteration
+                        num = int(line.find("Command"))  # searches for the index of the word exploit
+                        line_found = line[num - 1:]  # grabs the line of the word exploit in
+                        p1.stdin.write('pwd')
+                        p1.stdin.flush()
             messagebox.showinfo("Message", line_found)
 
         txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
