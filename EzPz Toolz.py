@@ -5,11 +5,10 @@ from PIL import ImageTk, Image
 import _thread, time, datetime
 from subprocess import PIPE
 import subprocess
-import os, sys
+import os, sys, pty
 
 themecolour = '#6374A3'
 toolbarcolour = "#32435E"
-
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -168,20 +167,56 @@ ___________      __________          ___________           .__
         entryhelplbl = tk.Label(self, text="Scan a range: 192.168.0.1-10 \n Scan a subnet: 192.168.0.1/13")
         entryhelplbl.place(relx=0.70, rely=0.94)
 
-
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
 
-        # the initiation of metasploit on startup
-        msfconsole_commands = ''' 
-       msfconsole
+        # the initiation of metasploit on startup, uses tmux so that I can open the process from a terminal later
 
-        '''
         open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
-        p1 = subprocess.Popen(msfconsole_commands, stdin=PIPE, shell=True, text=True)
+
+        #pty.spawn("/bin/sh") # spawning a TTY shell due to subprocess shell not being a TTY
+
+        p1 = subprocess.Popen('bash', stdin=PIPE, text=True)
+        print(p1.pid)
+
+        p1.stdin.write("python -c 'import pty; pty.spawn(\"/bin/sh\")'\n") # spawning a TTY Shell from within subprocceses module
+        p1.stdin.flush()
+
+        p1.stdin.write("export TERM=xterm\n") # to remove the error unsuitable terminal
+        p1.stdin.flush()
+
+        p1.stdin.write("tmux kill-server\n")
+        p1.stdin.flush()
+
+        #p1.stdin.write("tmux new -s new_session\n")
+        #p1.stdin.flush()
+
+        p1.stdin.write("tty\n")
+        p1.stdin.flush()
+
+        p1.stdin.write("echo hello\n")
+        p1.stdin.flush()
+
+        #p1.stdin.write("echo -e -n 'poo\r' > /dev/pts/1\n")
+        #p1.stdin.flush()
+
+        #p1.stdin.write("openvt -f -c10 clear tmux\n")
+        #p1.stdin.flush()
+
+        #p1.stdin.write('openvt \n')  # redirects output of metasploit to a text file
+        #p1.stdin.flush()
+
+        #p1.stdin.write('tmux new -s new_session\n')  # redirects output of metasploit to a text file
+        #p1.stdin.flush()
+
+        p1.stdin.write('msfconsole\n')  # redirects output of metasploit to a text file
+        p1.stdin.flush()
+
         p1.stdin.write('spool /root/msf_output.txt\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
+
+
 
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
@@ -241,6 +276,50 @@ class Page3(Page):
         d = list()  # to store user input for options
         options_list = list()
 
+        def show_command_shell():
+            def process_command():
+                open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
+
+                command = entry.get()
+                p1.stdin.write(command+"\n")
+                p1.stdin.flush()
+
+                time.sleep(2)
+
+                file = open('/root/msf_output.txt', "r")
+
+                txt = file.read()
+
+                console.config(state=NORMAL)  # makes it editable to insert text
+                console.delete('1.0', END)  # deletes the previous scan
+                console.insert(INSERT, txt)  # inserts text into the textbox
+                console.config(state=DISABLED)  # makes it uneditable again
+
+                file.close()  # terminates the resources in use
+
+            optionsframe.pack_forget()
+
+            scroll_bar = tk.Scrollbar(self)
+            scroll_bar.pack(side=RIGHT, fill=Y)
+
+            console = tk.Text(self, borderwidth=10, relief="ridge", state=DISABLED, wrap=WORD,
+                                yscrollcommand=scroll_bar.set)  # this is where text is displayed
+            console.pack(fill="both", expand="yes")
+
+            button = tk.Button(self, text="Enter", padx=10, pady=5, fg="white", bg="black",
+                               command=process_command)  # creates the button
+            button.pack(side="bottom")
+
+            entry = tk.Entry(self)  # makes a txt box for people to enter stuff
+            entry.pack(side=BOTTOM)
+
+            entrylbl = tk.Label(self, text="Enter command")
+            entrylbl.place(relx=0.43, rely=0.935)
+
+            p1.stdin.write("tmux new -s new_session\n")
+            p1.stdin.flush()
+
+
         def run_exploit():
             open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
 
@@ -250,10 +329,15 @@ class Page3(Page):
                 print(value)
                 p1.stdin.write('set ' + options_list[i] + ' ' + value + '\n')
                 p1.stdin.flush()
+
+            p1.stdin.write("tmux detach\n")
+            p1.stdin.flush()
+
             p1.stdin.write('exploit\n')  # runs exploit
             p1.stdin.flush()
 
             time.sleep(15)
+
             with open('/root/msf_output.txt', "r") as lines:  # edits the output
                 for line in lines:
                     if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
@@ -262,8 +346,13 @@ class Page3(Page):
                     if line.find("] Command shell") > 0:  # prevents the next line being taken for the next iteration
                         num = int(line.find("Command"))  # searches for the index of the word exploit
                         line_found = line[num - 1:]  # grabs the line of the word exploit in
-                        p1.stdin.write('pwd')
+
+                        # new page, with user input, console, enter button, back button
+                        show_command_shell()
+
+                        p1.stdin.write('pwd\n')
                         p1.stdin.flush()
+
             messagebox.showinfo("Message", line_found)
 
         txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
@@ -280,8 +369,8 @@ class Page3(Page):
                 # txtLbl.config(text=lstbox.get(L[0]))
                 # show targets
                 if exploit_btn_packed == False and L[0] != None:  # makes sure that something has been selected
-                    button = tk.Button(inputframe, text="Use Exploit", command=use_exploit)
-                    button.place(relx=0.62, rely=0.2)
+                    exploit_button = tk.Button(inputframe, text="Use Exploit", command=use_exploit)
+                    exploit_button.place(relx=0.62, rely=0.2)
                     exploit_btn_packed = True
                 return lstbox.get(L[0])  # so i can use the selected exploit
 
@@ -373,7 +462,7 @@ class MainView(tk.Frame):
         txtDate = tk.Text(buttonframe, height=1, bg="white", width=8)
         txtDate.pack(side="right", expand="false")
 
-        def insert_date_time(lol, delay):
+        def insert_date_time(void, delay):
             while True:
                 time.sleep(delay)
                 txtDate.config(state=NORMAL)
