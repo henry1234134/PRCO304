@@ -175,48 +175,29 @@ class Page3(Page):
 
         open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
 
-        #pty.spawn("/bin/sh") # spawning a TTY shell due to subprocess shell not being a TTY
-
         p1 = subprocess.Popen('bash', stdin=PIPE, text=True)
         print(p1.pid)
 
         p1.stdin.write("python -c 'import pty; pty.spawn(\"/bin/sh\")'\n") # spawning a TTY Shell from within subprocceses module
         p1.stdin.flush()
 
-        p1.stdin.write("export TERM=xterm\n") # to remove the error unsuitable terminal
+        p1.stdin.write("export TERM=screen\n") # sets the terminal type
         p1.stdin.flush()
 
-        p1.stdin.write("tmux kill-server\n")
+        p1.stdin.write("killall screen\n") # to terminate all previous screen sessions
         p1.stdin.flush()
 
-        #p1.stdin.write("tmux new -s new_session\n")
-        #p1.stdin.flush()
-
-        p1.stdin.write("tty\n")
+        p1.stdin.write("screen -S new_session\n") # creates a screen session
         p1.stdin.flush()
 
-        p1.stdin.write("echo hello\n")
+        p1.stdin.write("tty\n") # checks the terminal type
         p1.stdin.flush()
-
-        #p1.stdin.write("echo -e -n 'poo\r' > /dev/pts/1\n")
-        #p1.stdin.flush()
-
-        #p1.stdin.write("openvt -f -c10 clear tmux\n")
-        #p1.stdin.flush()
-
-        #p1.stdin.write('openvt \n')  # redirects output of metasploit to a text file
-        #p1.stdin.flush()
-
-        #p1.stdin.write('tmux new -s new_session\n')  # redirects output of metasploit to a text file
-        #p1.stdin.flush()
 
         p1.stdin.write('msfconsole\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
 
         p1.stdin.write('spool /root/msf_output.txt\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
-
-
 
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
@@ -316,9 +297,6 @@ class Page3(Page):
             entrylbl = tk.Label(self, text="Enter command")
             entrylbl.place(relx=0.43, rely=0.935)
 
-            p1.stdin.write("tmux new -s new_session\n")
-            p1.stdin.flush()
-
 
         def run_exploit():
             open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
@@ -330,9 +308,6 @@ class Page3(Page):
                 p1.stdin.write('set ' + options_list[i] + ' ' + value + '\n')
                 p1.stdin.flush()
 
-            p1.stdin.write("tmux detach\n")
-            p1.stdin.flush()
-
             p1.stdin.write('exploit\n')  # runs exploit
             p1.stdin.flush()
 
@@ -343,10 +318,14 @@ class Page3(Page):
                     if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
                         num = int(line.find("Exploit"))  # searches for the index of the word exploit
                         line_found = line[num - 1:]  # grabs the line of the word exploit in
-                    if line.find("] Command shell") > 0:  # prevents the next line being taken for the next iteration
+                    if line.find("0m Command shell") > 0:  # prevents the next line being taken for the next iteration
                         num = int(line.find("Command"))  # searches for the index of the word exploit
                         line_found = line[num - 1:]  # grabs the line of the word exploit in
 
+                        p2 = subprocess.Popen('bash', stdin=PIPE, text=True)
+
+                        p2.stdin.write('xterm -e "screen -x"\n')  # opens the shared terminal session in another process on a new terminal
+                        p2.stdin.flush()
                         # new page, with user input, console, enter button, back button
                         show_command_shell()
 
@@ -354,6 +333,7 @@ class Page3(Page):
                         p1.stdin.flush()
 
             messagebox.showinfo("Message", line_found)
+
 
         txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
         txtLbl.place(relx=0.23, rely=0.2)
