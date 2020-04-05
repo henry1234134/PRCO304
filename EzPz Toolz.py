@@ -23,9 +23,9 @@ class Page1(Page):
         Page.__init__(self, *args, **kwargs)
 
         logo = ImageTk.PhotoImage(Image.open("Images/EzPz Toolz Logo.png"))
-        imagelbl = tk.Label(self, image=logo)
+        imagelbl = tk.Label(self, image=logo, bg="#22345E")
         imagelbl.image = logo
-        imagelbl.pack()
+        imagelbl.place(relwidth=1, relheight=1)
 
 
 class Page2(Page):
@@ -199,14 +199,24 @@ class Page3(Page):
         p1.stdin.write('spool /root/msf_output.txt\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
 
+        metasploitloaded = False
+        while(metasploitloaded == False): # checks output to see if metasploit is loaded properly
+            with open('/root/msf_output.txt', "r") as lines:
+                for line in lines:
+                    if line.find("Spooling") > 0:
+                        _thread.start_new_thread(messagebox.showinfo, ("Success", "Metasploit Successfully loaded"))  # new thread so it doesn't stop the systems process
+                        metasploitloaded = True
+
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
 
         msimage = ImageTk.PhotoImage(Image.open("Images/metasploit.png"))
-        # msimage.height()
         imagelbl = tk.Label(sidebarframe, image=msimage, bg=themecolour)
         imagelbl.image = msimage
         imagelbl.pack(side=TOP, fill="both", expand="no")
+
+        metasploitlbl = tk.Label(sidebarframe, text="This tool makes use of Metasploit\n and allows you to run exploits\n on a known target. \n \n Please enter the targets operating\n system or protocol being\n used you want to exploit", bg=themecolour, fg='White')
+        metasploitlbl.pack()
 
         outputframe = tk.Frame(self)
         outputframe.pack(fill=BOTH, side=TOP, expand=TRUE) # used for the list of vulnerabilities
@@ -233,6 +243,13 @@ class Page3(Page):
         entry = tk.Entry(inputframe)
         entry.pack()
 
+        txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
+        txtLbl.place(relx=0.23, rely=0.2)
+
+        exploit_btn_packed = False
+
+
+
         def search_vulns():
             open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
             # txtbox.delete('1.0', END)  # deletes the previous scan
@@ -246,13 +263,16 @@ class Page3(Page):
 
             with open('/root/msf_output.txt', "r") as lines:  # edits the output
                 for line in lines:
-                    if line.find("exploit") > 0:  # prevents the next line being taken for the next iteration
+                    if line.find("exploit/") > 0:  # prevents the next line being taken for the next iteration
                         num = int(line.find("exploit"))  # searches for the index of the word exploit
                         line_found = line[num - 1:]  # grabs the line of the word exploit in
                         line_found = line_found.split()  # splits the sentence for each space
                         exploit_list.append(line_found[0])  # adds the first word to list
                         lstbox.insert(count, line_found[0])  # adds it to the listbox for the user to choose from
                         count = count + 1
+
+        search_vuln_btn = tk.Button(inputframe, command=search_vulns, text='Search for Exploits')
+        search_vuln_btn.pack()
 
         d = list()  # to store user input for options
         options_list = list()
@@ -329,16 +349,7 @@ class Page3(Page):
                         # new page, with user input, console, enter button, back button
                         show_command_shell()
 
-                        p1.stdin.write('pwd\n')
-                        p1.stdin.flush()
-
             messagebox.showinfo("Message", line_found)
-
-
-        txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
-        txtLbl.place(relx=0.23, rely=0.2)
-
-        exploit_btn_packed = False
 
         def check_selected():
             global exploit_btn_packed  # to access a variable outside function
@@ -388,6 +399,8 @@ class Page3(Page):
 
             for i in range(len(options_list)): # this outputs what needs to be changed for the user
                 # print("This needs to be changed: " + options_list[i]+'\n')
+                #if options_list[i] == "RHOSTS":
+                    #options_list[i] = "Remote Host (IP)" # changes the string to be more user friendly
                 tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
                 d.append(Entry(
                     optionsframe))  # I had to store the tkinter entry widget in a list because it is in a loop and i need to reference each one
@@ -410,8 +423,12 @@ class Page3(Page):
 
         check_selected()
 
-        search_vuln_btn = tk.Button(inputframe, command=search_vulns, text='Search Exploits')
-        search_vuln_btn.pack()
+class Page4(Page):
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+
+        label = tk.Label(self, text="Disclaimer, this is intended for educational use, I do not take responsibility for any illegal use or damages")
+        label.pack()
 
 
 class MainView(tk.Frame):
@@ -420,6 +437,7 @@ class MainView(tk.Frame):
         p1 = Page1(self)  # pages are classes
         p2 = Page2(self)
         p3 = Page3(self)
+        p4 = Page4(self)
 
         buttonframe = tk.Frame(self, bg=toolbarcolour)  # where buttons are kept
         container = tk.Frame(self)  # where pages are kept
@@ -429,15 +447,18 @@ class MainView(tk.Frame):
         p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
 
         b1 = tk.Button(buttonframe, text="Home Page", command=p1.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
         b2 = tk.Button(buttonframe, text="Nmap", command=p2.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
         b3 = tk.Button(buttonframe, text="Metasploit", command=p3.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
+        b4 = tk.Button(buttonframe, text="Useful Information", command=p4.lift, bg=toolbarcolour, bd=0, fg="#FFFFFF")
 
         b1.pack(side="left")
         b2.pack(side="left")
         b3.pack(side="left")
+        b4.pack(side="left")
 
         txtDate = tk.Text(buttonframe, height=1, bg="white", width=8)
         txtDate.pack(side="right", expand="false")
@@ -459,7 +480,7 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title("EzPz Tools")
+    root.title("EzPz Toolz")
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
     root.maxsize(1920, 1080)
