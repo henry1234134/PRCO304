@@ -199,13 +199,15 @@ class Page3(Page):
         p1.stdin.write('spool /root/msf_output.txt\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
 
-        metasploitloaded = False
-        while(metasploitloaded == False): # checks output to see if metasploit is loaded properly
-            with open('/root/msf_output.txt', "r") as lines:
-                for line in lines:
-                    if line.find("Spooling") > 0:
-                        _thread.start_new_thread(messagebox.showinfo, ("Success", "Metasploit Successfully loaded"))  # new thread so it doesn't stop the systems process
-                        metasploitloaded = True
+        def checkoutput(str):
+            found = False
+            while(found == False): # checks output to see if metasploit is loaded properly
+                with open('/root/msf_output.txt', "r") as lines:
+                    for line in lines:
+                        if line.find(str) > 0:
+                            found = True
+
+        checkoutput("Spooling")
 
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
@@ -259,7 +261,9 @@ class Page3(Page):
 
             p1.stdin.write('search platform:' + entry.get() + '\n')  # specifying search
             p1.stdin.flush()  # clears the previous input
-            time.sleep(2)  # gives time for it to be written to file
+            #time.sleep(2)  # gives time for it to be written to file
+
+            checkoutput("Name") # checks to see if the exloits have been outputted to file
 
             with open('/root/msf_output.txt', "r") as lines:  # edits the output
                 for line in lines:
@@ -331,25 +335,29 @@ class Page3(Page):
             p1.stdin.write('exploit\n')  # runs exploit
             p1.stdin.flush()
 
-            time.sleep(15)
+            #time.sleep(15)
 
-            with open('/root/msf_output.txt', "r") as lines:  # edits the output
-                for line in lines:
-                    if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
-                        num = int(line.find("Exploit"))  # searches for the index of the word exploit
-                        line_found = line[num - 1:]  # grabs the line of the word exploit in
-                    if line.find("0m Command shell") > 0:  # prevents the next line being taken for the next iteration
-                        num = int(line.find("Command"))  # searches for the index of the word exploit
-                        line_found = line[num - 1:]  # grabs the line of the word exploit in
+            exploited = False
+            while(exploited == False):
+                with open('/root/msf_output.txt', "r") as lines:  # edits the output
+                    for line in lines:
+                        if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
+                            num = int(line.find("Exploit"))  # searches for the index of the word exploit
+                            line_found = line[num - 1:]  # grabs the line of the word exploit in
+                            exploited = True
+                        if line.find("0m Command shell") > 0:  # prevents the next line being taken for the next iteration
+                            num = int(line.find("Command"))  # searches for the index of the word exploit
+                            line_found = line[num - 1:]  # grabs the line of the word exploit in
 
-                        p2 = subprocess.Popen('bash', stdin=PIPE, text=True)
+                            p2 = subprocess.Popen('bash', stdin=PIPE, text=True)
 
-                        p2.stdin.write('xterm -e "screen -x"\n')  # opens the shared terminal session in another process on a new terminal
-                        p2.stdin.flush()
-                        # new page, with user input, console, enter button, back button
-                        show_command_shell()
+                            p2.stdin.write('xterm -e "screen -x"\n')  # opens the shared terminal session in another process on a new terminal
+                            p2.stdin.flush()
+                            # new page, with user input, console, enter button, back button
+                            show_command_shell()
+                            exploited = True
 
-            messagebox.showinfo("Message", line_found)
+            _thread.start_new_thread(messagebox.showinfo, ("Message", line_found))  # new thread so it doesn't stop the systems process
 
         def check_selected():
             global exploit_btn_packed  # to access a variable outside function
