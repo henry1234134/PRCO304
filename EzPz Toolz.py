@@ -393,17 +393,20 @@ class Page3(Page):
             p1.stdin.write('show options\n')
             p1.stdin.flush()
 
-            time.sleep(2)  # gives time to write to file
+            #time.sleep(2)  # gives time to write to file
             #outputframe.pack()
-            with open('/root/msf_output.txt',
-                      "r") as lines:  # edits the output to find what needs to be inputted by the user for the exploit to run
-                for line in lines:
-                    if line.find("yes") > 0:
-                        num = int(line.find("yes"))
-                        line_found = line[:num + 3]
-                        line_found = line_found.split()  # splits the sentence for each space
-                        if line_found[1] == 'yes':
-                            options_list.append(line_found[0])  # adds the first word to the list
+            optionsfound = False
+            while(optionsfound == False):
+                with open('/root/msf_output.txt',
+                          "r") as lines:  # edits the output to find what needs to be inputted by the user for the exploit to run
+                    for line in lines:
+                        if line.find("yes") > 0:
+                            num = int(line.find("yes"))
+                            line_found = line[:num + 3]
+                            line_found = line_found.split()  # splits the sentence for each space
+                            if line_found[1] == 'yes':
+                                options_list.append(line_found[0])  # adds the first word to the list
+                            optionsfound = True
 
             for i in range(len(options_list)): # this outputs what needs to be changed for the user
                 # print("This needs to be changed: " + options_list[i]+'\n')
