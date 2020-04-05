@@ -336,7 +336,7 @@ class Page3(Page):
             p1.stdin.flush()
 
             #time.sleep(15)
-
+            #
             exploited = False
             while(exploited == False):
                 with open('/root/msf_output.txt', "r") as lines:  # edits the output
