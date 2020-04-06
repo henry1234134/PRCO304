@@ -64,6 +64,15 @@ class Page2(Page):
 
                 process1.wait()  # waits for the process to finish
 
+                scansuccess = True
+                with open("ping_scan_results_file", "r") as lines:
+                    for line in lines:
+                        if line.find("0 IP addresses") > 0:
+                            _thread.start_new_thread(messagebox.showinfo, (
+                            "Message", "No targets were specified, so 0 hosts scanned"))  # new thread so it doesn't stop the systems process
+                            scansuccess = False
+
+
                 file = open("ping_scan_results_file", "r")
 
                 txt = file.read()
@@ -72,6 +81,9 @@ class Page2(Page):
                 txtResult.delete('1.0', END)  # deletes the previous scan
                 txtResult.insert(INSERT, txt)  # inserts text into the textbox
                 txtResult.config(state=DISABLED)  # makes it uneditable again
+
+                if scansuccess == True:  # this boolean is to make sure that only one message box shows up to prevent crashes
+                    _thread.start_new_thread(messagebox.showinfo, ("Message", "Scan complete"))
 
                 file.close()  # terminates the resources in use
 
