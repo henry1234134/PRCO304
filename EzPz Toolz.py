@@ -17,7 +17,6 @@ class Page(tk.Frame):
     def show(self):
         self.lift()
 
-
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
@@ -26,7 +25,6 @@ class Page1(Page):
         imagelbl = tk.Label(self, image=logo, bg="#22345E")
         imagelbl.image = logo
         imagelbl.place(relwidth=1, relheight=1)
-
 
 class Page2(Page):
     def __init__(self, *args, **kwargs):
@@ -199,15 +197,15 @@ class Page3(Page):
         p1.stdin.write('spool /root/msf_output.txt\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
 
-        def checkoutput(str):
-            found = False
-            while(found == False): # checks output to see if metasploit is loaded properly
-                with open('/root/msf_output.txt', "r") as lines:
-                    for line in lines:
-                        if line.find(str) > 0:
-                            found = True
 
-        checkoutput("Spooling")
+        found = False
+        while(found == False): # checks output to see if metasploit is loaded properly
+            with open('/root/msf_output.txt', "r") as lines:
+                for line in lines:
+                    if line.find("Spooling") > 0:
+                        found = True
+
+
 
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
@@ -263,18 +261,28 @@ class Page3(Page):
             p1.stdin.flush()  # clears the previous input
             #time.sleep(2)  # gives time for it to be written to file
 
-            checkoutput("Name") # checks to see if the exloits have been outputted to file
-
-            with open('/root/msf_output.txt', "r") as lines:  # edits the output
-                for line in lines:
-                    if line.find("exploit/") > 0:  # prevents the next line being taken for the next iteration
-                        num = int(line.find("exploit"))  # searches for the index of the word exploit
-                        line_found = line[num - 1:]  # grabs the line of the word exploit in
-                        line_found = line_found.split()  # splits the sentence for each space
-                        exploit_list.append(line_found[0])  # adds the first word to list
-                        lstbox.insert(count, line_found[0])  # adds it to the listbox for the user to choose from
-                        count = count + 1
-
+            exploitfound = False
+            while(exploitfound == False):
+                with open('/root/msf_output.txt', "r") as lines:  # edits the output
+                    for line in lines:
+                        if line.find("exploit/") > 0:  # prevents the next line being taken for the next iteration
+                            num = int(line.find("exploit"))  # searches for the index of the word exploit
+                            line_found = line[num - 1:]  # grabs the line of the word exploit in
+                            line_found = line_found.split()  # splits the sentence for each space
+                            exploit_list.append(line_found[0])  # adds the first word to list
+                            lstbox.insert(count, line_found[0])  # adds it to the listbox for the user to choose from
+                            count = count + 1
+                            exploitfound = True
+                        if line.find("No results") > 0:
+                            num = int(line.find("No results"))  # searches for the index of the word exploit
+                            line_found = line[num - 1:]  # grabs the line of the word exploit in
+                            _thread.start_new_thread(messagebox.showinfo, ("Message", line_found))
+                            exploitfound = True
+                        if line.find("Invalid argument(s)") > 0:
+                            num = int(line.find("No results"))  # searches for the index of the word exploit
+                            line_found = line[num - 1:]  # grabs the line of the word exploit in
+                            _thread.start_new_thread(messagebox.showinfo, ("Message", "No keywords are provided"))
+                            exploitfound = True
         search_vuln_btn = tk.Button(inputframe, command=search_vulns, text='Search for Exploits')
         search_vuln_btn.pack()
 
@@ -441,7 +449,6 @@ class Page4(Page):
         label = tk.Label(self, text="Disclaimer, this is intended for educational use, I do not take responsibility for any illegal use or damages")
         label.pack()
 
-
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -487,7 +494,6 @@ class MainView(tk.Frame):
         _thread.start_new_thread(insert_date_time, (None, 1))
 
         p1.show()
-
 
 if __name__ == "__main__":
     root = tk.Tk()
