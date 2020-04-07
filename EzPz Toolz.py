@@ -43,12 +43,12 @@ class Page2(Page):
             else:
                 entry_valid = True
 
-            # open('ping_scan_results_file', 'w').close()         possible use of clearing txt
+            # open('nmap_results_file', 'w').close()         possible use of clearing txt
 
             if (entry_valid == True):
                 ping_scan = """
                ls
-               nmap """ + get_scan_selected() + """ """ + entry.get() + """> ping_scan_results_file
+               nmap """ + get_scan_selected() + """ """ + entry.get() + """> nmap_results_file
                """
 
                 # subprocess.call(["ls"], shell=True)
@@ -65,7 +65,7 @@ class Page2(Page):
                 process1.wait()  # waits for the process to finish
 
                 scansuccess = True
-                with open("ping_scan_results_file", "r") as lines:
+                with open("nmap_results_file", "r") as lines:
                     for line in lines:
                         if line.find("0 IP addresses") > 0:
                             _thread.start_new_thread(messagebox.showinfo, (
@@ -73,7 +73,7 @@ class Page2(Page):
                             scansuccess = False
 
 
-                file = open("ping_scan_results_file", "r")
+                file = open("nmap_results_file", "r")
 
                 txt = file.read()
 
@@ -428,11 +428,14 @@ class Page3(Page):
                                 options_list.append(line_found[0])  # adds the first word to the list
                             optionsfound = True
 
+            tk.Label(optionsframe, text=check_selected()+'\n', fg='Black', font=('bold',15)).pack()
+
             for i in range(len(options_list)): # this outputs what needs to be changed for the user
                 # print("This needs to be changed: " + options_list[i]+'\n')
-                #if options_list[i] == "RHOSTS":
-                    #options_list[i] = "Remote Host (IP)" # changes the string to be more user friendly
-                tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
+                if options_list[i] == "RHOSTS":
+                    tk.Label(optionsframe, text="Remote Host (IP)", fg='Black', font='bold').pack() # changes the string to be more user friendly
+                else:
+                    tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
                 d.append(Entry(
                     optionsframe))  # I had to store the tkinter entry widget in a list because it is in a loop and i need to reference each one
                 entry = d[i]  # retrieving from list
