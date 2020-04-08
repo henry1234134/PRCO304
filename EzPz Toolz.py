@@ -252,22 +252,25 @@ class Page3(Page):
         lstbox.pack(side=LEFT, fill=BOTH, expand=TRUE)
         # L = lstbox.curselection()
 
+        descLbl = tk.Label(inputframe, text="----Search for and select an exploit----\n")
+        descLbl.pack(side=TOP)
+
         entry = tk.Entry(inputframe)
         entry.pack()
 
         txtLbl = tk.Label(inputframe, text="Platform/Protocol:")
-        txtLbl.place(relx=0.23, rely=0.2)
+        txtLbl.place(relx=0.23, rely=0.4)
 
         exploit_btn_packed = False
 
-
-
+        exploit_descriptions = list()  # instantiates list of exploits
         def search_vulns():
             open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
             # txtbox.delete('1.0', END)  # deletes the previous scan
-            exploit_list = list()  # instantiates list of exploits
+
             count = 1  # number used for adding to listbox
             lstbox.delete(0, tk.END)  # clears the listbox of the previous scan
+            exploit_descriptions.clear() #clear the list for the next scan
 
             p1.stdin.write('search platform:' + entry.get() + '\n')  # specifying search
             p1.stdin.flush()  # clears the previous input
@@ -281,7 +284,9 @@ class Page3(Page):
                             num = int(line.find("exploit"))  # searches for the index of the word exploit
                             line_found = line[num - 1:]  # grabs the line of the word exploit in
                             line_found = line_found.split()  # splits the sentence for each space
-                            exploit_list.append(line_found[0])  # adds the first word to list
+                            desc_num = line.find(line_found[4]) # finds the start of the description
+                            print("Description is: " + line[desc_num - 1:])
+                            exploit_descriptions.append(line[desc_num - 1:])  # adds the first word to list
                             lstbox.insert(count, line_found[0])  # adds it to the listbox for the user to choose from
                             count = count + 1
                             exploitfound = True
@@ -380,16 +385,18 @@ class Page3(Page):
             _thread.start_new_thread(messagebox.showinfo, ("Message", line_found))  # new thread so it doesn't stop the systems process
 
         def check_selected():
-            global exploit_btn_packed  # to access a variable outside function
+            global exploit_btn_packed, exploit_desc  # to access a variable outside function
             self.after(200, check_selected)  # every 200ms rerun function
-            L = lstbox.curselection()
+            L = lstbox.curselection() # this needs to update to get current value
+
             # text = str(exploit_list[L])
             try:  # try and except due to lstbox not having an index on start
-                # txtLbl.config(text=lstbox.get(L[0]))
+                descLbl.config(text=exploit_descriptions[L[0]])
+                exploit_desc = exploit_descriptions[L[0]]
                 # show targets
                 if exploit_btn_packed == False and L[0] != None:  # makes sure that something has been selected
                     exploit_button = tk.Button(inputframe, text="Use Exploit", command=use_exploit)
-                    exploit_button.place(relx=0.62, rely=0.2)
+                    exploit_button.place(relx=0.62, rely=0.4)
                     exploit_btn_packed = True
                 return lstbox.get(L[0])  # so i can use the selected exploit
 
@@ -429,7 +436,7 @@ class Page3(Page):
                             optionsfound = True
 
             tk.Label(optionsframe, text=check_selected()+'\n', fg='Black', font=('bold',15)).pack()
-
+            tk.Label(optionsframe, text="Description: " + exploit_desc + '\n', fg='Black', font=('bold', 12)).pack()
             for i in range(len(options_list)): # this outputs what needs to be changed for the user
                 # print("This needs to be changed: " + options_list[i]+'\n')
                 if options_list[i] == "RHOSTS":
