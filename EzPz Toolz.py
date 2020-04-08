@@ -164,8 +164,8 @@ ___________      __________          ___________           .__
                 x = "-sL"
                 return x
 
-        button = tk.Button(self, text="Initiate Scan", padx=10, pady=5, fg="white", bg="black",
-                           command=button_press)  # creates the button
+        button = tk.Button(self, text="Initiate Scan", padx=10, pady=5,
+                           command=button_press, bg="Red", fg="White", activebackground="Green", activeforeground="White")  # creates the button
         button.pack(side="bottom")
 
         entry = tk.Entry(self)  # makes a txt box for people to enter stuff
@@ -395,7 +395,7 @@ class Page3(Page):
                 exploit_desc = exploit_descriptions[L[0]]
                 # show targets
                 if exploit_btn_packed == False and L[0] != None:  # makes sure that something has been selected
-                    exploit_button = tk.Button(inputframe, text="Use Exploit", command=use_exploit)
+                    exploit_button = tk.Button(inputframe, text="Use Exploit", command=use_exploit, bg="Red", fg="White", activebackground="Green", activeforeground="White")
                     exploit_button.place(relx=0.62, rely=0.4)
                     exploit_btn_packed = True
                 return lstbox.get(L[0])  # so i can use the selected exploit
@@ -448,7 +448,7 @@ class Page3(Page):
                 entry = d[i]  # retrieving from list
                 entry.pack()  # packing it to screen
 
-            run_exploitbtn = tk.Button(optionsframe, text='Run exploit', command=run_exploit)
+            run_exploitbtn = tk.Button(optionsframe, text='Run exploit', command=run_exploit, bg="Red", fg="White", activebackground="Green", activeforeground="White")
             run_exploitbtn.pack()
 
             def back():
