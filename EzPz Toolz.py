@@ -37,55 +37,56 @@ class Page2(Page):
         label.pack(side=TOP)
 
         def button_press():
+            verification_answer = messagebox.askyesno("Warning", "Are you sure you want to do this?", icon='warning')
+            if verification_answer == True:
+                if (entry.get() == ""):  # some basic validation
+                    entry_valid = False
+                else:
+                    entry_valid = True
 
-            if (entry.get() == ""):  # some basic validation
-                entry_valid = False
-            else:
-                entry_valid = True
+                # open('nmap_results_file', 'w').close()         possible use of clearing txt
 
-            # open('nmap_results_file', 'w').close()         possible use of clearing txt
+                if (entry_valid == True):
+                    ping_scan = """
+                   ls
+                   nmap """ + get_scan_selected() + """ """ + entry.get() + """> nmap_results_file
+                   """
 
-            if (entry_valid == True):
-                ping_scan = """
-               ls
-               nmap """ + get_scan_selected() + """ """ + entry.get() + """> nmap_results_file
-               """
+                    # subprocess.call(["ls"], shell=True)
 
-                # subprocess.call(["ls"], shell=True)
+                    txtResult.config(state=NORMAL)  # makes it editable to insert text
+                    txtResult.delete('1.0', END)  # deletes the previous scan
+                    txtResult.insert(INSERT, "Processing...")  # inserts text into the textbox
+                    txtResult.config(state=DISABLED)  # makes it uneditable again
 
-                txtResult.config(state=NORMAL)  # makes it editable to insert text
-                txtResult.delete('1.0', END)  # deletes the previous scan
-                txtResult.insert(INSERT, "Processing...")  # inserts text into the textbox
-                txtResult.config(state=DISABLED)  # makes it uneditable again
+                    process1 = subprocess.Popen([ping_scan], shell=True)
 
-                process1 = subprocess.Popen([ping_scan], shell=True)
+                    print(entry.get())
 
-                print(entry.get())
+                    process1.wait()  # waits for the process to finish
 
-                process1.wait()  # waits for the process to finish
-
-                scansuccess = True
-                with open("nmap_results_file", "r") as lines:
-                    for line in lines:
-                        if line.find("0 IP addresses") > 0:
-                            _thread.start_new_thread(messagebox.showinfo, (
-                            "Message", "No targets were specified, so 0 hosts scanned"))  # new thread so it doesn't stop the systems process
-                            scansuccess = False
+                    scansuccess = True
+                    with open("nmap_results_file", "r") as lines:
+                        for line in lines:
+                            if line.find("0 IP addresses") > 0:
+                                _thread.start_new_thread(messagebox.showinfo, (
+                                "Message", "No targets were specified, so 0 hosts scanned"))  # new thread so it doesn't stop the systems process
+                                scansuccess = False
 
 
-                file = open("nmap_results_file", "r")
+                    file = open("nmap_results_file", "r")
 
-                txt = file.read()
+                    txt = file.read()
 
-                txtResult.config(state=NORMAL)  # makes it editable to insert text
-                txtResult.delete('1.0', END)  # deletes the previous scan
-                txtResult.insert(INSERT, txt)  # inserts text into the textbox
-                txtResult.config(state=DISABLED)  # makes it uneditable again
+                    txtResult.config(state=NORMAL)  # makes it editable to insert text
+                    txtResult.delete('1.0', END)  # deletes the previous scan
+                    txtResult.insert(INSERT, txt)  # inserts text into the textbox
+                    txtResult.config(state=DISABLED)  # makes it uneditable again
 
-                if scansuccess == True:  # this boolean is to make sure that only one message box shows up to prevent crashes
-                    _thread.start_new_thread(messagebox.showinfo, ("Message", "Scan complete"))
+                    if scansuccess == True:  # this boolean is to make sure that only one message box shows up to prevent crashes
+                        _thread.start_new_thread(messagebox.showinfo, ("Message", "Scan complete"))
 
-                file.close()  # terminates the resources in use
+                    file.close()  # terminates the resources in use
 
         nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
         imagelbl = tk.Label(side_panel, image=nmapimage, bg=themecolour)
@@ -209,15 +210,12 @@ class Page3(Page):
         p1.stdin.write('spool /root/msf_output.txt\n')  # redirects output of metasploit to a text file
         p1.stdin.flush()
 
-
         found = False
         while(found == False): # checks output to see if metasploit is loaded properly
             with open('/root/msf_output.txt', "r") as lines:
                 for line in lines:
                     if line.find("Spooling") > 0:
                         found = True
-
-
 
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
@@ -348,41 +346,43 @@ class Page3(Page):
 
 
         def run_exploit():
-            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
+            verification_answer = messagebox.askyesno("Warning", "Are you sure you want to do this?", icon='warning')
+            if verification_answer == True:
+                open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
 
-            for i in range(len(d)):  # sets all of the options needed to run the exploit
-                user_input = d[i]
-                value = user_input.get()
-                print(value)
-                p1.stdin.write('set ' + options_list[i] + ' ' + value + '\n')
+                for i in range(len(d)):  # sets all of the options needed to run the exploit
+                    user_input = d[i]
+                    value = user_input.get()
+                    print(value)
+                    p1.stdin.write('set ' + options_list[i] + ' ' + value + '\n')
+                    p1.stdin.flush()
+
+                p1.stdin.write('exploit\n')  # runs exploit
                 p1.stdin.flush()
 
-            p1.stdin.write('exploit\n')  # runs exploit
-            p1.stdin.flush()
+                #time.sleep(15)
+                #
+                exploited = False
+                while(exploited == False):
+                    with open('/root/msf_output.txt', "r") as lines:  # edits the output
+                        for line in lines:
+                            if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
+                                num = int(line.find("Exploit"))  # searches for the index of the word exploit
+                                line_found = line[num - 1:]  # grabs the line of the word exploit in
+                                exploited = True
+                            if line.find("0m Command shell") > 0:  # prevents the next line being taken for the next iteration
+                                num = int(line.find("Command"))  # searches for the index of the word exploit
+                                line_found = line[num - 1:]  # grabs the line of the word exploit in
 
-            #time.sleep(15)
-            #
-            exploited = False
-            while(exploited == False):
-                with open('/root/msf_output.txt', "r") as lines:  # edits the output
-                    for line in lines:
-                        if line.find("Exploit") > 0:  # prevents the next line being taken for the next iteration
-                            num = int(line.find("Exploit"))  # searches for the index of the word exploit
-                            line_found = line[num - 1:]  # grabs the line of the word exploit in
-                            exploited = True
-                        if line.find("0m Command shell") > 0:  # prevents the next line being taken for the next iteration
-                            num = int(line.find("Command"))  # searches for the index of the word exploit
-                            line_found = line[num - 1:]  # grabs the line of the word exploit in
+                                p2 = subprocess.Popen('bash', stdin=PIPE, text=True)
 
-                            p2 = subprocess.Popen('bash', stdin=PIPE, text=True)
+                                p2.stdin.write('xterm -e "screen -x"\n')  # opens the shared terminal session in another process on a new terminal
+                                p2.stdin.flush()
+                                # new page, with user input, console, enter button, back button
+                                show_command_shell()
+                                exploited = True
 
-                            p2.stdin.write('xterm -e "screen -x"\n')  # opens the shared terminal session in another process on a new terminal
-                            p2.stdin.flush()
-                            # new page, with user input, console, enter button, back button
-                            show_command_shell()
-                            exploited = True
-
-            _thread.start_new_thread(messagebox.showinfo, ("Message", line_found))  # new thread so it doesn't stop the systems process
+                _thread.start_new_thread(messagebox.showinfo, ("Message", line_found))  # new thread so it doesn't stop the systems process
 
         def check_selected():
             global exploit_btn_packed, exploit_desc  # to access a variable outside function
@@ -406,61 +406,64 @@ class Page3(Page):
             # print(selection)
 
         def use_exploit():
-            for widget in optionsframe.winfo_children():  # deletes everything in the previous input frame
-                widget.destroy()
+            if(check_selected() == None): # prevents navigation to page when button is selected
+                print("FAIL")
+            else:
+                for widget in optionsframe.winfo_children():  # deletes everything in the previous input frame
+                    widget.destroy()
 
-            outputframe.pack_forget()
-            inputframe.pack_forget()
+                outputframe.pack_forget()
+                inputframe.pack_forget()
 
-            optionsframe.pack(fill=BOTH, expand=FALSE)
+                optionsframe.pack(fill=BOTH, expand=FALSE)
 
-            p1.stdin.write('use ' + check_selected() + '\n')
-            p1.stdin.flush()
-            open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
-            p1.stdin.write('show options\n')
-            p1.stdin.flush()
+                p1.stdin.write('use ' + check_selected() + '\n')
+                p1.stdin.flush()
+                open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
+                p1.stdin.write('show options\n')
+                p1.stdin.flush()
 
-            #time.sleep(2)  # gives time to write to file
-            #outputframe.pack()
-            optionsfound = False
-            while(optionsfound == False):
-                with open('/root/msf_output.txt',
-                          "r") as lines:  # edits the output to find what needs to be inputted by the user for the exploit to run
-                    for line in lines:
-                        if line.find("yes") > 0:
-                            num = int(line.find("yes"))
-                            line_found = line[:num + 3]
-                            line_found = line_found.split()  # splits the sentence for each space
-                            if line_found[1] == 'yes':
-                                options_list.append(line_found[0])  # adds the first word to the list
-                            optionsfound = True
+                #time.sleep(2)  # gives time to write to file
+                #outputframe.pack()
+                optionsfound = False
+                while(optionsfound == False):
+                    with open('/root/msf_output.txt',
+                              "r") as lines:  # edits the output to find what needs to be inputted by the user for the exploit to run
+                        for line in lines:
+                            if line.find("yes") > 0:
+                                num = int(line.find("yes"))
+                                line_found = line[:num + 3]
+                                line_found = line_found.split()  # splits the sentence for each space
+                                if line_found[1] == 'yes':
+                                    options_list.append(line_found[0])  # adds the first word to the list
+                                optionsfound = True
 
-            tk.Label(optionsframe, text=check_selected()+'\n', fg='Black', font=('bold',15)).pack()
-            tk.Label(optionsframe, text="Description: " + exploit_desc + '\n', fg='Black', font=('bold', 12)).pack()
-            for i in range(len(options_list)): # this outputs what needs to be changed for the user
-                # print("This needs to be changed: " + options_list[i]+'\n')
-                if options_list[i] == "RHOSTS":
-                    tk.Label(optionsframe, text="Remote Host (IP)", fg='Black', font='bold').pack() # changes the string to be more user friendly
-                else:
-                    tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
-                d.append(Entry(
-                    optionsframe))  # I had to store the tkinter entry widget in a list because it is in a loop and i need to reference each one
-                entry = d[i]  # retrieving from list
-                entry.pack()  # packing it to screen
+                tk.Label(optionsframe, text=check_selected()+'\n', fg='Black', font=('bold',15)).pack()
+                tk.Label(optionsframe, text="Description: " + exploit_desc + '\n', fg='Black', font=('bold', 12)).pack()
+                for i in range(len(options_list)): # this outputs what needs to be changed for the user
+                    # print("This needs to be changed: " + options_list[i]+'\n')
+                    if options_list[i] == "RHOSTS":
+                        tk.Label(optionsframe, text="Remote Host (IP)", fg='Black', font='bold').pack() # changes the string to be more user friendly
+                    else:
+                        tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
+                    d.append(Entry(
+                        optionsframe))  # I had to store the tkinter entry widget in a list because it is in a loop and i need to reference each one
+                    entry = d[i]  # retrieving from list
+                    entry.pack()  # packing it to screen
 
-            run_exploitbtn = tk.Button(optionsframe, text='Run exploit', command=run_exploit, bg="Red", fg="White", activebackground="Green", activeforeground="White")
-            run_exploitbtn.pack()
+                run_exploitbtn = tk.Button(optionsframe, text='Run exploit', command=run_exploit, bg="Red", fg="White", activebackground="Green", activeforeground="White")
+                run_exploitbtn.pack()
 
-            def back():
-                d.clear() #clears the previous lists
-                options_list.clear()
+                def back():
+                    d.clear() #clears the previous lists
+                    options_list.clear()
 
-                optionsframe.pack_forget()
-                outputframe.pack(fill=BOTH, side=TOP, expand=TRUE)
-                inputframe.pack(fill=BOTH, side=BOTTOM, expand=FALSE)
+                    optionsframe.pack_forget()
+                    outputframe.pack(fill=BOTH, side=TOP, expand=TRUE)
+                    inputframe.pack(fill=BOTH, side=BOTTOM, expand=FALSE)
 
-            backbtn = tk.Button(optionsframe, text='Back', command=back)
-            backbtn.pack()
+                backbtn = tk.Button(optionsframe, text='Back', command=back)
+                backbtn.pack()
 
         check_selected()
 
