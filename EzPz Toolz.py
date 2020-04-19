@@ -471,7 +471,12 @@ class Page4(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
 
-        label = tk.Label(self, text="Disclaimer, this is intended for educational use, I do not take responsibility for any illegal use or damages")
+        label = tk.Label(self, text="Disclaimer\n Only use this penetration testing tool on your own systems or if you are authorised to do so."
+                                    "\nI do not take responsibility for any illegal use or damages.\n This programme is developed for the University of Plymouths, "
+                                    "Computer and Information Security final year project"
+                                    "\n For more information about the services used, see Nmap.org and metasploit.com"
+                                    "\nDeveloped by Henry Kaminarides")
+
         label.pack()
 
 class MainView(tk.Frame):
