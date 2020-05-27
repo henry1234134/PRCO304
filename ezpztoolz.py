@@ -1,14 +1,15 @@
+#!/usr/bin/env python3.7
 import tkinter as tk
+from PIL import ImageTk, Image
 from tkinter import *
 from tkinter import messagebox
-from PIL import ImageTk, Image
 import _thread, time, datetime
 from subprocess import PIPE
 import subprocess
-import os, sys, pty
 
 themecolour = '#6374A3'
 toolbarcolour = "#32435E"
+
 
 class Page(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -20,8 +21,7 @@ class Page(tk.Frame):
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-
-        logo = ImageTk.PhotoImage(Image.open("Images/EzPz Toolz Logo.png"))
+        logo = ImageTk.PhotoImage(file="Images/EzPz Toolz Logo.png")
         imagelbl = tk.Label(self, image=logo, bg="#22345E")
         imagelbl.image = logo
         imagelbl.place(relwidth=1, relheight=1)
@@ -44,15 +44,11 @@ class Page2(Page):
                 else:
                     entry_valid = True
 
-                # open('nmap_results_file', 'w').close()         possible use of clearing txt
-
                 if (entry_valid == True):
                     ping_scan = """
                    ls
                    nmap """ + get_scan_selected() + """ """ + entry.get() + """> nmap_results_file
                    """
-
-                    # subprocess.call(["ls"], shell=True)
 
                     txtResult.config(state=NORMAL)  # makes it editable to insert text
                     txtResult.delete('1.0', END)  # deletes the previous scan
@@ -88,11 +84,10 @@ class Page2(Page):
 
                     file.close()  # terminates the resources in use
 
-        nmapimage = ImageTk.PhotoImage(Image.open("Images/nmap.png"))
+        nmapimage = ImageTk.PhotoImage(file="Images/nmap.png")
         imagelbl = tk.Label(side_panel, image=nmapimage, bg=themecolour)
         imagelbl.image = nmapimage
         imagelbl.pack(side=TOP, fill="both", expand="no")
-        # imagelbl.place(x=0, y=0)
 
         frameScrollBar = tk.Scrollbar(self)
         frameScrollBar.pack(side=RIGHT, fill=Y)
@@ -165,8 +160,8 @@ ___________      __________          ___________           .__
                 x = "-sL"
                 return x
 
-        button = tk.Button(self, text="Initiate Scan", padx=10, pady=5,
-                           command=button_press, bg="Red", fg="White", activebackground="Green", activeforeground="White")  # creates the button
+        button = tk.Button(self, text="Initiate Scan", font=('bold'),padx=10, pady=5,
+                           command=button_press, bg="Red", fg="White", activebackground="Orange", activeforeground="White")  # creates the button
         button.pack(side="bottom")
 
         entry = tk.Entry(self)  # makes a txt box for people to enter stuff
@@ -175,7 +170,7 @@ ___________      __________          ___________           .__
         entrylbl = tk.Label(self, text="Enter target IP")
         entrylbl.place(relx=0.435, rely=0.935)
 
-        entryhelplbl = tk.Label(self, text="Scan a range: 192.168.0.1-10 \n Scan a subnet: 192.168.0.1/13")
+        entryhelplbl = tk.Label(self, text="Scan a range: 192.168.0.1-10 \n Scan a subnet: 192.168.0.1/24")
         entryhelplbl.place(relx=0.70, rely=0.94)
 
 class Page3(Page):
@@ -220,12 +215,12 @@ class Page3(Page):
         sidebarframe = tk.Frame(self, bg=themecolour)
         sidebarframe.pack(fill=BOTH, side=LEFT, expand=FALSE)
 
-        msimage = ImageTk.PhotoImage(Image.open("Images/metasploit.png"))
+        msimage = ImageTk.PhotoImage(file="Images/metasploit.png")
         imagelbl = tk.Label(sidebarframe, image=msimage, bg=themecolour)
         imagelbl.image = msimage
         imagelbl.pack(side=TOP, fill="both", expand="no")
 
-        metasploitlbl = tk.Label(sidebarframe, text="This tool makes use of Metasploit\n and allows you to run exploits\n on a known target. \n \n Please enter the targets operating\n system or protocol being\n used you want to exploit", bg=themecolour, fg='White')
+        metasploitlbl = tk.Label(sidebarframe, text="This tool makes use of Metasploit\n and allows you to run exploits\n on a known target. \n \n \n \n Please enter the target's operating\n system or protocol being\n used that you want to exploit", bg=themecolour, fg='White')
         metasploitlbl.pack()
 
         outputframe = tk.Frame(self)
@@ -237,20 +232,13 @@ class Page3(Page):
         optionsframe = tk.Frame(self)  # frame inside sidebar frame used to contain and remove exploit options
         optionsframe.pack(fill=BOTH, expand=FALSE)
 
-        # buttonsframe = tk.Frame(self)
-        # buttonsframe.pack(fill=BOTH, expand=TRUE)
-
-        # txtbox = tk.Text(outputframe, wrap=WORD, yscrollcommand=frameScrollBar.set)
-        # txtbox.pack(fill="both")
-
         frameScrollBar = tk.Scrollbar(outputframe)
         frameScrollBar.pack(side=RIGHT, fill=Y)
 
         lstbox = tk.Listbox(outputframe, yscrollcommand=frameScrollBar.set)
         lstbox.pack(side=LEFT, fill=BOTH, expand=TRUE)
-        # L = lstbox.curselection()
 
-        descLbl = tk.Label(inputframe, text="----Search for and select an exploit----\n")
+        descLbl = tk.Label(inputframe, text="----Search and select an exploit----\n", font=('bold'))
         descLbl.pack(side=TOP)
 
         entry = tk.Entry(inputframe)
@@ -264,7 +252,6 @@ class Page3(Page):
         exploit_descriptions = list()  # instantiates list of exploits
         def search_vulns():
             open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
-            # txtbox.delete('1.0', END)  # deletes the previous scan
 
             count = 1  # number used for adding to listbox
             lstbox.delete(0, tk.END)  # clears the listbox of the previous scan
@@ -395,7 +382,7 @@ class Page3(Page):
                 exploit_desc = exploit_descriptions[L[0]]
                 # show targets
                 if exploit_btn_packed == False and L[0] != None:  # makes sure that something has been selected
-                    exploit_button = tk.Button(inputframe, text="Use Exploit", command=use_exploit, bg="Red", fg="White", activebackground="Green", activeforeground="White")
+                    exploit_button = tk.Button(inputframe, text="Use Exploit", font=('bold'),  command=use_exploit, bg="Red", fg="White", activebackground="Orange", activeforeground="White")
                     exploit_button.place(relx=0.62, rely=0.4)
                     exploit_btn_packed = True
                 return lstbox.get(L[0])  # so i can use the selected exploit
@@ -451,7 +438,7 @@ class Page3(Page):
                     entry = d[i]  # retrieving from list
                     entry.pack()  # packing it to screen
 
-                run_exploitbtn = tk.Button(optionsframe, text='Run exploit', command=run_exploit, bg="Red", fg="White", activebackground="Green", activeforeground="White")
+                run_exploitbtn = tk.Button(optionsframe, text='Run exploit', font=('bold'), command=run_exploit, bg="Red", fg="White", activebackground="Orange", activeforeground="White")
                 run_exploitbtn.pack()
 
                 def back():
@@ -471,12 +458,13 @@ class Page4(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
 
-        label = tk.Label(self, text="Disclaimer\n Only use this penetration testing tool on your own systems or if you are authorised to do so."
-                                    "\nI do not take responsibility for any illegal use or damages.\n This programme is developed for the University of Plymouths, "
-                                    "Computer and Information Security final year project"
-                                    "\n For more information about the services used, see Nmap.org and metasploit.com"
-                                    "\nDeveloped by Henry Kaminarides")
+        headinglbl = tk.Label(self, text="Disclaimer", font=('bold'))
+        label = tk.Label(self, text="Only use this penetration testing tool on your own systems. If used on other systems make sure you are authorised otherwise you could be breaking the law."
+                                    "\nThe developer of this application does not take any responsibility for any illegal use or damages.\n This programme is developed for the University of Plymouth's, "
+                                    "Computer and Information Security Final Year Project"
+                                    "\n For more information about the services used, see Nmap.org and metasploit.com")
 
+        headinglbl.pack()
         label.pack()
 
 class MainView(tk.Frame):
