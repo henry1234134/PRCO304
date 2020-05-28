@@ -46,7 +46,6 @@ class Page2(Page):
 
                 if (entry_valid == True):
                     ping_scan = """
-                   ls
                    nmap """ + get_scan_selected() + """ """ + entry.get() + """> nmap_results_file
                    """
 
@@ -55,9 +54,7 @@ class Page2(Page):
                     txtResult.insert(INSERT, "Processing...")  # inserts text into the textbox
                     txtResult.config(state=DISABLED)  # makes it uneditable again
 
-                    process1 = subprocess.Popen([ping_scan], shell=True)
-
-                    print(entry.get())
+                    process1 = subprocess.Popen([ping_scan], stdout=subprocess.DEVNULL, shell=True)
 
                     process1.wait()  # waits for the process to finish
 
@@ -181,8 +178,7 @@ class Page3(Page):
 
         open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
 
-        p1 = subprocess.Popen('bash', stdin=PIPE, text=True)
-        print(p1.pid)
+        p1 = subprocess.Popen('bash', stdin=PIPE, stdout=subprocess.DEVNULL, text=True)
 
         p1.stdin.write("python -c 'import pty; pty.spawn(\"/bin/sh\")'\n") # spawning a TTY Shell from within subprocceses module
         p1.stdin.flush()
@@ -269,7 +265,6 @@ class Page3(Page):
                             line_found = line[num - 1:]  # grabs the line of the word exploit in
                             line_found = line_found.split()  # splits the sentence for each space
                             desc_num = line.find(line_found[4]) # finds the start of the description
-                            print("Description is: " + line[desc_num - 1:])
                             exploit_descriptions.append(line[desc_num - 1:])  # adds the first word to list
                             lstbox.insert(count, line_found[0])  # adds it to the listbox for the user to choose from
                             count = count + 1
@@ -338,7 +333,6 @@ class Page3(Page):
                 for i in range(len(d)):  # sets all of the options needed to run the exploit
                     user_input = d[i]
                     value = user_input.get()
-                    print(value)
                     p1.stdin.write('set ' + options_list[i] + ' ' + value + '\n')
                     p1.stdin.flush()
 
@@ -388,7 +382,7 @@ class Page3(Page):
 
         def use_exploit():
             if(check_selected() == None): # prevents navigation to page when button is selected
-                print("FAIL")
+                _thread.start_new_thread(messagebox.showerror, ("Message", "Please select an exploit"))
             else:
                 for widget in optionsframe.winfo_children():  # deletes everything in the previous input frame
                     widget.destroy()
@@ -452,8 +446,8 @@ class Page4(Page):
 
         headinglbl = tk.Label(self, text="Disclaimer", font=('bold'))
         label = tk.Label(self, text="Only use this penetration testing tool on your own systems. If used on other systems make sure you are authorised otherwise you could be breaking the law."
-                                    "\nThe developer of this application does not take any responsibility for any illegal use or damages.\n This programme is developed for the University of Plymouth's, "
-                                    "Computer and Information Security Final Year Project"
+                                    "\nThe developer of this application does not take any responsibility for any illegal use or damages.\n This programme is developed for the University of Plymouth's "
+                                    "Computer and Information Security Final Year Project."
                                     "\n For more information about the services used, see Nmap.org and metasploit.com")
 
         headinglbl.pack()
