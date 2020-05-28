@@ -372,7 +372,6 @@ class Page3(Page):
             self.after(200, check_selected)  # every 200ms rerun function
             L = lstbox.curselection() # this needs to update to get current value
 
-            # text = str(exploit_list[L])
             try:  # try and except due to lstbox not having an index on start
                 descLbl.config(text=exploit_descriptions[L[0]])
                 exploit_desc = exploit_descriptions[L[0]]
@@ -420,14 +419,14 @@ class Page3(Page):
 
                 tk.Label(optionsframe, text=check_selected()+'\n', fg='Black', font=('bold',15)).pack()
                 tk.Label(optionsframe, text="Description: " + exploit_desc + '\n', fg='Black', font=('bold', 12)).pack()
+
                 for i in range(len(options_list)): # this outputs what needs to be changed for the user
-                    # print("This needs to be changed: " + options_list[i]+'\n')
                     if options_list[i] == "RHOSTS":
                         tk.Label(optionsframe, text="Remote Host (IP)", fg='Black', font='bold').pack() # changes the string to be more user friendly
                     else:
                         tk.Label(optionsframe, text=options_list[i], fg='Black', font='bold').pack()
                     d.append(Entry(
-                        optionsframe))  # I had to store the tkinter entry widget in a list because it is in a loop and i need to reference each one
+                        optionsframe))  # Store tkinter entry widget in a list for reference
                     entry = d[i]  # retrieving from list
                     entry.pack()  # packing it to screen
 
