@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.7
 import tkinter as tk
-from PIL import ImageTk, Image
+from PIL import ImageTk
 from tkinter import *
 from tkinter import messagebox
 import _thread, time, datetime
@@ -177,7 +177,7 @@ class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
 
-        # the initiation of metasploit on startup, uses tmux so that I can open the process from a terminal later
+        # the initiation of metasploit on startup, uses Screen so that it can open the process from a terminal later
 
         open('/root/msf_output.txt', 'w').close()  # deletes previous log file created
 
@@ -259,7 +259,6 @@ class Page3(Page):
 
             p1.stdin.write('search platform:' + entry.get() + '\n')  # specifying search
             p1.stdin.flush()  # clears the previous input
-            #time.sleep(2)  # gives time for it to be written to file
 
             exploitfound = False
             while(exploitfound == False):
@@ -331,7 +330,6 @@ class Page3(Page):
             entrylbl = tk.Label(self, text="Enter command")
             entrylbl.place(relx=0.43, rely=0.935)
 
-
         def run_exploit():
             verification_answer = messagebox.askyesno("Warning", "Are you sure you want to do this?", icon='warning')
             if verification_answer == True:
@@ -347,8 +345,6 @@ class Page3(Page):
                 p1.stdin.write('exploit\n')  # runs exploit
                 p1.stdin.flush()
 
-                #time.sleep(15)
-                #
                 exploited = False
                 while(exploited == False):
                     with open('/root/msf_output.txt', "r") as lines:  # edits the output
@@ -390,7 +386,6 @@ class Page3(Page):
             except:
                 exploit_btn_packed = False  # the allows the if statement to run again even if it failed
                 pass
-            # print(selection)
 
         def use_exploit():
             if(check_selected() == None): # prevents navigation to page when button is selected
@@ -410,8 +405,6 @@ class Page3(Page):
                 p1.stdin.write('show options\n')
                 p1.stdin.flush()
 
-                #time.sleep(2)  # gives time to write to file
-                #outputframe.pack()
                 optionsfound = False
                 while(optionsfound == False):
                     with open('/root/msf_output.txt',
